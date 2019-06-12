@@ -1,3 +1,4 @@
+
 import React, {Component} from 'react';
 import {Link} from 'react-router-dom';
 
@@ -75,7 +76,7 @@ class Signup extends Component{
                     <div className="col-sm-3 col-md-6"></div>
                     <div className="col-sm-9 col-md-6 text-right"><span className="text-info">Forgot your password?</span></div>
                   </div>
-                    <button className="btn btn-lg text-white shadow" style={{backgroundColor:'#1BA94C',float:'right'}}>Log In</button>
+                    <button className="btn btn-lg text-white shadow" style={{backgroundColor:'#1BA94C',float:'right'}}>Sign Up</button>
                     <br/>
                     <br/>
                     <br/>

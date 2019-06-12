@@ -1,3 +1,4 @@
+
 import React, {Component} from 'react';
 import {Link} from 'react-router-dom';
 
@@ -44,7 +45,7 @@ class Signin extends Component{
             <div className="card shadow">
               <div className="card-body">
                 <div className="row">
-                  <div className="col-sm-6 p-2 shadow" style={{fontSize:'1.5em',backgroundColor:'#1BA94C',color:'#fff'}} >Sign Up</div>
+                  <div className="col-sm-6 p-2 shadow" style={{fontSize:'1.5em',backgroundColor:'#1BA94C',color:'#fff'}} ><Link style={{color:'#fff',textDecoration:'none'}} to="/signup">Sign Up</Link></div>
                   <div className="col-sm-6 p-2" style={{fontSize:'1.5em'}}>Sign In</div>
                 </div>
                 <br/>
