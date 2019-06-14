@@ -7,7 +7,7 @@ const SignedInLinks = (props)=>{
 
     };
     return (
-            [<li className="nav-item mx-2"><NavLink className="nav-link text-white" to="/">Add Story</NavLink></li>,
+            [<li className="nav-item mx-2"><NavLink className="nav-link text-white" to="/createBlog">Add Story</NavLink></li>,
             <li className="nav-item mx-2"><NavLink className="nav-link text-white" onClick={handleSignOut} to="/">LogOut</NavLink></li>,
             <li className="nav-item mx-2"><NavLink className="nav-link text-white" to="/">Profile Pic</NavLink></li>]
         );
