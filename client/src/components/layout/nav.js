@@ -28,7 +28,7 @@ const Nav = (props)=>{
 
         <form className="form-inline my-2 my-lg-0 mx-2">
           <input type="search" placeholder="Search" aria-label="Search" style={{background:'inherit',border:'none',borderBottom:'2px solid white',color:'#e3e8e8'}}/>
-          <i class="fa fa-search" aria-hidden="true" style={{cursor:'pointer',color:'white'}}></i>
+          <i className="fa fa-search" aria-hidden="true" style={{cursor:'pointer',color:'white'}}></i>
         </form>
 
         {links}
