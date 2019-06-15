@@ -6,6 +6,7 @@ import Signup from './components/auth/signupForm';
 import Nav from './components/layout/nav';
 import CreateBlog from './components/blog/createBlog';
 import Dashboard from './components/dashboard/dashboard';
+import DisplayBlog from './components/blog/displayBlog';
 
 function App() {
   return (
@@ -13,10 +14,11 @@ function App() {
       <div className="App">
         <Nav />
         <Switch>
-          <Route exact path='/' component={Dashboard} /> 
+          <Route exact path='/' component={Dashboard} />
           <Route exact path='/createBlog' component={CreateBlog}/>
           <Route exact path="/signin" component={Signin}/>
           <Route exact path="/signup" component={Signup}/>
+          <Route exact path="/blog/:blogId" component={DisplayBlog}/>
         </Switch>
       </div>
     </BrowserRouter>
