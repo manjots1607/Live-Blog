@@ -1,7 +1,9 @@
-import React from 'react'
+import React from 'react';
+import {withRouter} from 'react-router-dom';
 
 const BlogList = (props)=>{
   let projects = <p>Some Fancy annimation</p>;
+  console.log(props);
   if(props.blogs && props.blogs.length>0){
     projects = props.blogs.map((b)=>(
       <div className="container col-sm-12 col-md-6 mt-4 mb-4" key={b.id}>
@@ -13,11 +15,11 @@ const BlogList = (props)=>{
         </div>
         <h2 className="text-left float-left"><a href="/">{b.title}</a></h2>
         <p className="text-left float-left">{b.content}</p>
-        <button type="button" className="btn btn-outline-success float-left">Read this post</button>
+        <button type="button" className="btn btn-outline-success float-left" onClick={()=>props.history.push(`/blog/${b.id}`)}>Read this post</button>
       </div>
     ));
   }
-  return (projects);
+  return projects;
 }
 
-export default BlogList;
+export default withRouter(BlogList);
