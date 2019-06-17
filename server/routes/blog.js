@@ -2,7 +2,7 @@ const express= require('express');
 const router=express.Router();
 const db=require("../models/index");
 
-router.get("/",(req,res)=>{
+router.get("/blog-api",(req,res)=>{
     // code to display all blogs
     db.Blog.find()
     .then((blogs)=>{
@@ -16,9 +16,15 @@ router.get("/",(req,res)=>{
     // res.json({msg:"here will be all list of blogs!!!"});
 });
 
-router.post("/",(req,res)=>{
+router.post("/blog-api",(req,res)=>{
     // code to add new blog
-    db.Blog.create(req.body)
+   var formData = req.body;
+   var author = {
+       id:req.user._id,
+       username:req.user.username
+   };
+   formData.author = author;
+    db.Blog.create(formData)
     .then((createdBlog)=>{
         res.json(createdBlog);
     }).catch((err)=>{
@@ -28,7 +34,7 @@ router.post("/",(req,res)=>{
 
 });
 
-router.get("/:id",(req,res)=>{
+router.get("/blog-api/:id",(req,res)=>{
     // code to show one blog
     db.Blog.findById(req.params.id)
     .then((foundBlog)=>{
@@ -37,10 +43,10 @@ router.get("/:id",(req,res)=>{
         console.log(err);
         res.status(404).json(err);
     });
-    
+
 });
 
-router.put("/:id",(req,res)=>{
+router.put("/blog-api/:id",(req,res)=>{
     //logic to update blog
     db.Blog.findByIdAndUpdate(req.params.id,req.body,{new:true})
     .then((updatedBlog)=>{
@@ -52,7 +58,7 @@ router.put("/:id",(req,res)=>{
 
 });
 
-router.delete("/:id",(req,res)=>{
+router.delete("/blog-api/:id",(req,res)=>{
     //logic to delete blog
     db.Blog.findByIdAndRemove(req.params.id)
     .then(()=>{
@@ -61,7 +67,7 @@ router.delete("/:id",(req,res)=>{
         console.log(err);
         res.json(err);
     });
-  
+
 });
 
 module.exports=router;

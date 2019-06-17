@@ -40,6 +40,19 @@ class Dashboard extends Component{
       }]
     }
   }
+
+  componentDidMount(){
+    /*fetch("http:localhost://:3001/blog-api")
+      .then(res=>{
+        this.setState({
+          blogs:res
+        });
+      })
+      .catch(err=>{
+
+      })*/
+  }
+
   render(){
     return (
       <div className="container">

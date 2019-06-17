@@ -5,11 +5,17 @@ var blogSchema=new mongoose.Schema({
         type:String,
         required:true
     },
-    body:String,
+    content:String,
     author:{
-        type:String,
-        required:true
+        id:{
+            type:mongoose.Schema.Types.ObjectId,
+            rel:User
     },
+        username:String
+    },
+    imageURL:{
+        type:String
+    }
     created_date:{
         type:Date,
         default:Date.now()
