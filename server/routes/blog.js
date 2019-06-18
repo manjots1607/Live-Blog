@@ -2,7 +2,7 @@ const express= require('express');
 const router=express.Router();
 const db=require("../models/index");
 
-router.get("/blog-api",(req,res)=>{
+router.get("/",(req,res)=>{
     // code to display all blogs
     db.Blog.find()
     .then((blogs)=>{
@@ -16,15 +16,16 @@ router.get("/blog-api",(req,res)=>{
     // res.json({msg:"here will be all list of blogs!!!"});
 });
 
-router.post("/blog-api",(req,res)=>{
+router.post("/",(req,res)=>{
     // code to add new blog
    var formData = req.body;
-   var author = {
-       id:req.user._id,
-       username:req.user.username
-   };
-   formData.author = author;
-    db.Blog.create(formData)
+   console.log("data reached is ",formData.data);
+   // var author = {
+   //     id:req.user._id,
+   //     username:req.user.username
+   // };
+   // formData.author = author;
+    db.Blog.create(formData.data)
     .then((createdBlog)=>{
         res.json(createdBlog);
     }).catch((err)=>{
@@ -34,7 +35,7 @@ router.post("/blog-api",(req,res)=>{
 
 });
 
-router.get("/blog-api/:id",(req,res)=>{
+router.get("/:id",(req,res)=>{
     // code to show one blog
     db.Blog.findById(req.params.id)
     .then((foundBlog)=>{
@@ -46,7 +47,7 @@ router.get("/blog-api/:id",(req,res)=>{
 
 });
 
-router.put("/blog-api/:id",(req,res)=>{
+router.put("/:id",(req,res)=>{
     //logic to update blog
     db.Blog.findByIdAndUpdate(req.params.id,req.body,{new:true})
     .then((updatedBlog)=>{
@@ -58,7 +59,7 @@ router.put("/blog-api/:id",(req,res)=>{
 
 });
 
-router.delete("/blog-api/:id",(req,res)=>{
+router.delete("/:id",(req,res)=>{
     //logic to delete blog
     db.Blog.findByIdAndRemove(req.params.id)
     .then(()=>{

@@ -1,4 +1,5 @@
 import React, {Component} from 'react';
+import axios from 'axios';
 
 class CreateBlog extends Component{
     constructor(props){
@@ -17,23 +18,23 @@ class CreateBlog extends Component{
 
   handleSubmit(e){
     e.preventDefault();
-    fetch("http:localhost://:3001/blog-api",{
-       method: 'POST',
-       body: this.state
-    })
-      .then((res)=>{
+    const data = this.state;
+
+  axios.post(`http://localhost:5000/blog-api/`, { data })
+      .then(res => {
+        console.log(res);
+        console.log(res.data);
         this.setState({title:"",
-        content:"",
-        imageURL:''});
-        this.props.history.push('/');
+              content:"",
+              imageURL:''});
+              this.props.history.push('/');
       })
       .catch((err)=>{
 
-      })
+      });
   }
 
   render(){
-    console.log(this.props);
     const titleStyle = {
       width:'80vw',
       fontSize: '2.5em',

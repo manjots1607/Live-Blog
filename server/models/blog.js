@@ -6,16 +6,16 @@ var blogSchema=new mongoose.Schema({
         required:true
     },
     content:String,
-    author:{
-        id:{
-            type:mongoose.Schema.Types.ObjectId,
-            rel:User
-    },
-        username:String
-    },
+    // author:{
+    //     id:{
+    //         type:mongoose.Schema.Types.ObjectId,
+    //         rel:User
+    // },
+    //     username:String
+    // },
     imageURL:{
         type:String
-    }
+    },
     created_date:{
         type:Date,
         default:Date.now()
