@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import BlogList from '../blog/blogList';
+import axios from 'axios';
 
 class Dashboard extends Component{
   constructor(props){
@@ -40,6 +41,19 @@ class Dashboard extends Component{
       }]
     }
   }
+
+  componentDidMount(){
+    axios.get("http://localhost:5000/blog-api/")
+      .then(res=>{
+        this.setState({
+          blogs:res.data
+        });
+      })
+      .catch(err=>{
+
+      })
+  }
+
   render(){
     return (
       <div className="container">

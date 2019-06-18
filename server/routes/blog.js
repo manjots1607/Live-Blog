@@ -18,7 +18,14 @@ router.get("/",(req,res)=>{
 
 router.post("/",(req,res)=>{
     // code to add new blog
-    db.Blog.create(req.body)
+   var formData = req.body;
+   console.log("data reached is ",formData.data);
+   // var author = {
+   //     id:req.user._id,
+   //     username:req.user.username
+   // };
+   // formData.author = author;
+    db.Blog.create(formData.data)
     .then((createdBlog)=>{
         res.json(createdBlog);
     }).catch((err)=>{
@@ -37,7 +44,7 @@ router.get("/:id",(req,res)=>{
         console.log(err);
         res.status(404).json(err);
     });
-    
+
 });
 
 router.put("/:id",(req,res)=>{
@@ -61,7 +68,7 @@ router.delete("/:id",(req,res)=>{
         console.log(err);
         res.json(err);
     });
-  
+
 });
 
 module.exports=router;
