@@ -7,8 +7,10 @@ import Nav from './components/layout/nav';
 import CreateBlog from './components/blog/createBlog';
 import Dashboard from './components/dashboard/dashboard';
 import DisplayBlog from './components/blog/displayBlog';
+import Axios from 'axios';
 
 function App() {
+  //Axios.defaults.withCredentials = true
   return (
     <BrowserRouter>
       <div className="App">

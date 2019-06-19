@@ -1,9 +1,11 @@
 import React, {Component} from 'react';
 import {Link} from 'react-router-dom';
+import Axios from 'axios';
 
 class Signin extends Component{
   constructor(props){
     super(props);
+    
     this.state = {
       email:"",
       password: ""
@@ -15,6 +17,23 @@ class Signin extends Component{
 
   handleSubmit(e){
     e.preventDefault();
+    
+    Axios.post("http://localhost:5000/api/login",
+          {username:this.state.email,
+           password:this.state.password 
+          })
+    .then(res=>{
+      if(res.success=="true"){
+        alert("You logged IN!!!!");
+      }
+      else{
+        alert("there is some problem ");
+      }
+    }).catch(err=>{
+      console.log(err);
+      alert(err);
+    });
+    
   }
 
   handleChange(e){
