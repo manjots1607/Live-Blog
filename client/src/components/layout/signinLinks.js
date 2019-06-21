@@ -1,9 +1,20 @@
 import React from 'react'
 import {NavLink} from 'react-router-dom';
+import Axios from 'axios';
 
 const SignedInLinks = (props)=>{
     const handleSignOut = (e)=>{
         //e.preventDefault();
+        Axios.get("/api/logout")
+        .then(res=>{
+            if(res.msg){
+                alert(res.msg);
+                props.logout();
+            }
+
+        }).catch(err=>{
+            alert(err);
+        });
 
     };
     return (

@@ -23,11 +23,14 @@ class Signin extends Component{
            password:this.state.password 
           })
     .then(res=>{
-      if(res.success=="true"){
-        alert("You logged IN!!!!");
+      this.props.login();
+      
+      if(res.success==="true"){
+        console.log("You logged IN!!!!");
+
       }
       else{
-        alert("there is some problem ");
+        console.log("there is some problem ");
       }
     }).catch(err=>{
       console.log(err);
@@ -37,6 +40,7 @@ class Signin extends Component{
   }
 
   handleChange(e){
+    console.log(this.props.login);
     this.setState({[e.target.name]:e.target.value});
   }
 
