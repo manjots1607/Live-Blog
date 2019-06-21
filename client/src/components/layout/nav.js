@@ -4,8 +4,8 @@ import SigninLinks from './signinLinks';
 import SignoutLinks from './signoutLinks';
 
 const Nav = (props)=>{
-  var login = false;
-  const links = login?<SigninLinks />:<SignoutLinks />;
+  var login = props.login;
+  const links = login?<SigninLinks logout={props.logout}/>:<SignoutLinks />;
   return(
     <nav className="navbar navbar-expand-md navbar-light" style={{backgroundColor:'#39424E'}}>
       <NavLink className="navbar-brand text-white" to="/" >Live Blog</NavLink>
