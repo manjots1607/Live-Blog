@@ -25,7 +25,7 @@ class Nav extends Component{
     axios.post('http://localhost:5000/blog-api/search',{titleSearch:this.state.titleSearch})
       .then(res=>{
         console.log(res.data);
-        this.props.history.push('/search', {result:res.data})
+        this.props.history.push('/temp', {result:res.data})
       })
         .catch(err=>{
 
