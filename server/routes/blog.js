@@ -16,6 +16,20 @@ router.get("/",(req,res)=>{
     // res.json({msg:"here will be all list of blogs!!!"});
 });
 
+router.post('/search',(req,res)=>{
+  var title = req.body.titleSearch;
+  const regex = new RegExp(escapeRegex(title), 'gi');
+        db.Blog.find({title: regex})
+           .then(blogs=>{
+             console.log(blogs);
+             res.json(blogs);
+           })
+           .catch((err)=>{
+               console.log(err);
+               res.json(err);
+           });
+});
+
 router.post("/",(req,res)=>{
     // code to add new blog
    var formData = req.body;
@@ -73,5 +87,7 @@ router.delete("/:id",(req,res)=>{
     });
 
 });
-
+function escapeRegex(text) {
+    return text.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&");
+}
 module.exports=router;

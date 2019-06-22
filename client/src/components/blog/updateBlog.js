@@ -14,7 +14,6 @@ class UpdateBlog extends Component{
       blogId:''
     };
     this.handleChange = this.handleChange.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
     this.handleKeyPress = this.handleKeyPress.bind(this);
     this.handleKeyUp = this.handleKeyUp.bind(this);
   }
@@ -82,24 +81,6 @@ class UpdateBlog extends Component{
         });
       }
 }
-
-  handleSubmit(e){
-    e.preventDefault();
-    const data = this.state;
-
-  // axios.post(`http://localhost:5000/blog-api/`, { data })
-  //     .then(res => {
-  //       console.log(res);
-  //       console.log(res.data);
-  //       this.setState({title:"",
-  //             content:"",
-  //             imageURL:''});
-  //             this.props.history.push('/');
-  //     })
-  //     .catch((err)=>{
-  //
-  //     });
-  }
 
   render(){
     const {title,imageURL,content,authorURL,username} = this.state;

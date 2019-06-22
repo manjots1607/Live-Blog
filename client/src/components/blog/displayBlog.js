@@ -51,8 +51,13 @@ class DisplayBlog extends Component{
           }else{  //Selected more than 1 character
             console.log(data);
             if(data.x==8){
-              const par = displayBlog.state.content.substring(0,data.a) + displayBlog.state.content.substring(data.b);
-              displayBlog.setState({content:par});
+              if(displayBlog.state.content[data.a-2]==='\\'){
+                const par = displayBlog.state.content.substring(0,data.a-1) + displayBlog.state.content.substring(data.b);
+                displayBlog.setState({content:par});
+              }else{
+                const par = displayBlog.state.content.substring(0,data.a) + displayBlog.state.content.substring(data.b);
+                displayBlog.setState({content:par});
+              }
             }
          }
         }
@@ -61,7 +66,8 @@ class DisplayBlog extends Component{
 
   render(){
     const {title,imageURL,content,authorURL,username} = this.state;
-
+    var modifiedContent = content.replace(/\r/g, "<br/>");
+    modifiedContent = modifiedContent.replace(/\n/g,"<br/>");
     return title ===""?<p>Some fancy annimation</p>:(
       <div className="container mt-5">
         <div className="row mb-5">
@@ -80,7 +86,7 @@ class DisplayBlog extends Component{
         <div className="row mt-5 pt-5">
           <div className="col-md-1 col-sm-0"></div>
           <div className="col-md-10 col-sm-12">
-            <p className="text-left updateParagraph" style={{fontSize:'1.3em'}}>{content}</p>
+            <p className="text-left updateParagraph" style={{fontSize:'1.3em'}}>{modifiedContent}</p>
           </div>
           <div className="col-md-1 col-sm-0"></div>
         </div>
