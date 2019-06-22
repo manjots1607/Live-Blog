@@ -7,6 +7,7 @@ import Nav from './components/layout/nav';
 import CreateBlog from './components/blog/createBlog';
 import Dashboard from './components/dashboard/dashboard';
 import DisplayBlog from './components/blog/displayBlog';
+import UpdateBlog from './components/blog/updateBlog';
 import Axios from 'axios';
 
 class App extends  Component{
@@ -35,6 +36,7 @@ class App extends  Component{
               render={(props) => <Signup {...props} isLogin={this.state.user} login={this.loginHandler} />}
             />
             <Route exact path="/blog/:blogId" component={DisplayBlog}/>
+            <Route exact path="/blog/:blogId/edit" component={UpdateBlog}/>
           </Switch>
         </div>
       </BrowserRouter>
