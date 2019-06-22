@@ -62,7 +62,7 @@ app.post("/api/register",(req,res)=>{
       passport.authenticate("local")(req,res,()=>{
           res.json({
               success:"true",
-              user:user.username
+              user:req.user,
           });
       });
   });
@@ -78,7 +78,9 @@ app.post("/api/login",passport.authenticate("local",{
   }),(req,res)=>{
       res.json({
         success:"true",
-        msg:"You logged in successfully with username "+req.user.username});
+        msg:"You logged in successfully with username "+req.user.username,
+        user:req.user
+      });
 });
 
 app.get("/api/err",(req,res)=>{

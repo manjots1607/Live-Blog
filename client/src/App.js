@@ -10,13 +10,13 @@ import DisplayBlog from './components/blog/displayBlog';
 import Axios from 'axios';
 
 class App extends  Component{
-  
+
   state={
-    login:false
+    user:undefined
   }
 
-  loginHandler=()=>{
-    this.setState({login:!this.state.login});
+  loginHandler=(user)=>{
+    this.setState({user});
   }
   render(){
 
@@ -24,14 +24,16 @@ class App extends  Component{
     return (
       <BrowserRouter>
         <div className="App">
-          <Nav login={this.state.login} logout={this.loginHandler} />
+          <Nav user={this.state.user} logout={this.loginHandler} />
           <Switch>
             <Route exact path='/' component={Dashboard} />
             <Route exact path='/createBlog' component={CreateBlog}/>
-            <Route exact path="/signin" 
-              render={(props) => <Signin {...props} isLogin={this.state.login} login={this.loginHandler} />}
+            <Route exact path="/signin"
+              render={(props) => <Signin {...props} isLogin={this.state.user} login={this.loginHandler} />}
             />
-            <Route exact path="/signup" component={Signup}/>
+            <Route exact path="/signup"
+              render={(props) => <Signup {...props} isLogin={this.state.user} login={this.loginHandler} />}
+            />
             <Route exact path="/blog/:blogId" component={DisplayBlog}/>
           </Switch>
         </div>

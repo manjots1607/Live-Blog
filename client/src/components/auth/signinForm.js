@@ -5,7 +5,7 @@ import Axios from 'axios';
 class Signin extends Component{
   constructor(props){
     super(props);
-    
+
     this.state = {
       email:"",
       password: ""
@@ -17,17 +17,17 @@ class Signin extends Component{
 
   handleSubmit(e){
     e.preventDefault();
-    
+
     Axios.post("http://localhost:5000/api/login",
           {username:this.state.email,
-           password:this.state.password 
+           password:this.state.password
           })
     .then(res=>{
-      this.props.login();
-      
-      if(res.success==="true"){
-        console.log("You logged IN!!!!");
+      this.props.login(res.data.user);
 
+      if(res.data.success==="true"){
+        this.props.login(res.data.user);
+        this.props.history.push('/');
       }
       else{
         console.log("there is some problem ");
@@ -36,11 +36,11 @@ class Signin extends Component{
       console.log(err);
       alert(err);
     });
-    
+
   }
 
   handleChange(e){
-    console.log(this.props.login);
+    //console.log(this.props.login);
     this.setState({[e.target.name]:e.target.value});
   }
 

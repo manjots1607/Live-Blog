@@ -17,15 +17,15 @@ class Signup extends Component {
 
   handleSubmit(e) {
     e.preventDefault();
-    
+
     Axios.post("http://localhost:5000/api/register",
       {
         username: this.state.email,
         password: this.state.password
       })
       .then(res => {
-        if (res.success === "true") {
-          alert("Registration successfull!!!!");
+        if (res.data.success === "true") {
+          this.props.login(res.data.user);
           this.props.history.push("/");
         }
         else {

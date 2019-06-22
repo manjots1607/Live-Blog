@@ -20,11 +20,13 @@ router.post("/",(req,res)=>{
     // code to add new blog
    var formData = req.body;
    console.log("data reached is ",formData.data);
-   // var author = {
-   //     id:req.user._id,
-   //     username:req.user.username
-   // };
-   // formData.author = author;
+   var author = {
+       id:req.user._id,
+       username:req.user.username,
+       authorURL:req.user.authorURL
+   };
+   console.log(author);
+   formData.data.author = author;
     db.Blog.create(formData.data)
     .then((createdBlog)=>{
         res.json(createdBlog);
@@ -37,6 +39,7 @@ router.post("/",(req,res)=>{
 
 router.get("/:id",(req,res)=>{
     // code to show one blog
+    console.log("Blog request");
     db.Blog.findById(req.params.id)
     .then((foundBlog)=>{
         res.json(foundBlog);
