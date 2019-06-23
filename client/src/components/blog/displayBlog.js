@@ -31,13 +31,26 @@ class DisplayBlog extends Component{
       });
 
       socket.on('updateContent-keypress',function (data) {
+        const updating = document.getElementById('updating');
+        updating.innerText = "Updating...";
+        setTimeout(()=>{
+          updating.innerText = "";
+        },1000)
         if(data.blogId ===displayBlog.state.blogId){
+            if(data.x===13){
+              data.x=10;
+            }
             const par = displayBlog.state.content===''?'': displayBlog.state.content.substring(0,data.a)+String.fromCharCode(data.x) + displayBlog.state.content.substring(data.b);
             displayBlog.setState({content:par});
         }
       });
 
       socket.on('updateContent-keyup',function (data) {
+        const updating = document.getElementById('updating');
+        updating.innerText = "Updating...";
+        setTimeout(()=>{
+          updating.innerText = "";
+        },1000)
         if(data.blogId ===displayBlog.state.blogId){
          if(data.a===data.b){
             if(data.x==8){
@@ -66,10 +79,12 @@ class DisplayBlog extends Component{
 
   render(){
     const {title,imageURL,content,authorURL,username} = this.state;
-    var modifiedContent = content.replace(/\r/g, "<br/>");
-    modifiedContent = modifiedContent.replace(/\n/g,"<br/>");
+    var modifiedContent = content.split('\n').map(e=>(
+      <p className="text-left updateParagraph" style={{fontSize:'1.3em'}}>{e}</p>
+    ));
     return title ===""?<p>Some fancy annimation</p>:(
       <div className="container mt-5">
+      <p id="updating" style={{position:'fixed',top:'10px',zIndex:'3',fontWeight:'bold',color:'blue',fontSize:'1.2em',width:'80vw'}} className="align-center"></p>
         <div className="row mb-5">
           <div className="col-md-6 sm-12">
             <h1 className="allign-middle mb-5 text-left">{title}</h1>
@@ -86,7 +101,7 @@ class DisplayBlog extends Component{
         <div className="row mt-5 pt-5">
           <div className="col-md-1 col-sm-0"></div>
           <div className="col-md-10 col-sm-12">
-            <p className="text-left updateParagraph" style={{fontSize:'1.3em'}}>{modifiedContent}</p>
+          {modifiedContent}
           </div>
           <div className="col-md-1 col-sm-0"></div>
         </div>

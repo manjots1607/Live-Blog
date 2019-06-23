@@ -66,6 +66,7 @@ router.get("/:id",(req,res)=>{
 
 router.put("/:id",(req,res)=>{
     //logic to update blog
+    console.log("updating blog");
     db.Blog.findByIdAndUpdate(req.params.id,req.body,{new:true})
     .then((updatedBlog)=>{
         res.json(updatedBlog);

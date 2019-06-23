@@ -43,17 +43,33 @@ class UpdateBlog extends Component{
     var endPosition = document.querySelector('.updateContent').selectionEnd;
     var x = e.charCode || e.keyCode || e.which;
       if(x!=32){
+
         console.log("keypress");
-        socket.emit('updateContent-keypress',{
-          a:startPosition,
-          b:endPosition,
-          x:x,
-          blogId:updateBlog.state.blogId
-        });
+
+        axios.put(`http://localhost:5000/blog-api/${this.state.blogId}`,{title:this.state.title,content:this.state.content,imageURL:this.state.imageURL})
+          .then(res=>{
+            const updating = document.getElementById('updating');
+            updating.innerText = "Saving...";
+            setTimeout(()=>{
+              updating.innerText = "";
+            },1000)
+          })
+          .catch(err=>{
+            alert(err.message);
+          });
+        setTimeout(()=>{
+          socket.emit('updateContent-keypress',{
+            a:startPosition,
+            b:endPosition,
+            x:x,
+            blogId:updateBlog.state.blogId
+          });
+        },2000)
       }
   }
 
   handleKeyUp(e){
+
     const updateBlog = this;
     var startPosition = document.querySelector('.updateContent').selectionStart;
     var endPosition = document.querySelector('.updateContent').selectionEnd;
@@ -64,21 +80,51 @@ class UpdateBlog extends Component{
       }
       else if(x==8){  //backspace
         console.log("keyup");
-        socket.emit('updateContent-keyup',{
-          a:startPosition,
-          b:endPosition,
-          x:x,
-          blogId:updateBlog.state.blogId
-        });
-        //p.innerText = p.innerText.substring(0,startPosition) + p.innerText.substring(startPosition+1);
+
+        axios.put(`http://localhost:5000/blog-api/${this.state.blogId}`,{title:this.state.title,content:this.state.content,imageURL:this.state.imageURL})
+          .then(res=>{
+            const updating = document.getElementById('updating');
+            updating.innerText = "Saving...";
+            setTimeout(()=>{
+              updating.innerText = "";
+            },1000)
+          })
+          .catch(err=>{
+            alert(err.message);
+          });
+
+          setTimeout(()=>{
+            socket.emit('updateContent-keyup',{
+              a:startPosition,
+              b:endPosition,
+              x:x,
+              blogId:updateBlog.state.blogId
+            });
+          },2000)
+
       }else if(x==32){  //space
         console.log("keyup");
-        socket.emit('updateContent-keyup',{
-          a:startPosition,
-          b:endPosition,
-          x:x,
-          blogId:updateBlog.state.blogId
-        });
+
+        axios.put(`http://localhost:5000/blog-api/${this.state.blogId}`,{title:this.state.title,content:this.state.content,imageURL:this.state.imageURL})
+          .then(res=>{
+            const updating = document.getElementById('updating');
+            updating.innerText = "Saving...";
+            setTimeout(()=>{
+              updating.innerText = "";
+            },1000)
+          })
+          .catch(err=>{
+            alert(err.message);
+          });
+
+          setTimeout(()=>{
+            socket.emit('updateContent-keyup',{
+              a:startPosition,
+              b:endPosition,
+              x:x,
+              blogId:updateBlog.state.blogId
+            });
+          },2000)
       }
 }
 
@@ -94,6 +140,7 @@ class UpdateBlog extends Component{
 
     return title ===""?<p>Some fancy annimation</p>:(
       <div className="container mt-5">
+        <p id="updating" style={{position:'fixed',top:'10px',zIndex:'3',fontWeight:'bold',color:'blue',fontSize:'1.2em',width:'80vw'}} className="align-center"></p>
         <div className="row mb-5">
           <div className="col-md-6 sm-12">
             <h1 className="allign-middle mb-5 text-left">{title}</h1>

@@ -26,6 +26,7 @@ passport.serializeUser(db.User.serializeUser());
 passport.deserializeUser(db.User.deserializeUser());
 
 //To remove the Access-Control-Allow-Origin error
+
 // app.use((req,res,next)=>{
 //   res.header("Access-Control-Allow-Origin","*");
 //   res.header("Access-Control-Allow-Headers","Origin,X-Requested-With,Content-Type,Accept");
@@ -35,7 +36,7 @@ passport.deserializeUser(db.User.deserializeUser());
 
 app.use(cors({
   origin:['http://localhost:3000'],
-  methods:['GET','POST'],
+  methods:['GET','POST','PUT'],
   credentials: true // enable set cookie
 }));
 
