@@ -7,6 +7,7 @@ const          express = require('express'),
               session = require("express-session"),
             bodyParser = require("body-parser"),
                   cors = require("cors"),
+                socket = require('socket.io'),
                    app = express();
 
 
@@ -25,6 +26,7 @@ passport.serializeUser(db.User.serializeUser());
 passport.deserializeUser(db.User.deserializeUser());
 
 //To remove the Access-Control-Allow-Origin error
+
 // app.use((req,res,next)=>{
 //   res.header("Access-Control-Allow-Origin","*");
 //   res.header("Access-Control-Allow-Headers","Origin,X-Requested-With,Content-Type,Accept");
@@ -34,7 +36,7 @@ passport.deserializeUser(db.User.deserializeUser());
 
 app.use(cors({
   origin:['http://localhost:3000'],
-  methods:['GET','POST'],
+  methods:['GET','POST','PUT'],
   credentials: true // enable set cookie
 }));
 
@@ -89,6 +91,23 @@ app.get("/api/err",(req,res)=>{
 
 
 const port=process.env.PORT || 5000;
-app.listen( port,()=>{
+var server=app.listen( port,()=>{
     console.log("app running on: " + port);
+});
+
+var io = socket(server);
+io.on('connection', (socket) => {
+
+    console.log('made socket connection', socket.id);
+    // Handle chat event
+    socket.on('updateContent-keyup', function(data){
+        console.log('socket data',data);
+        socket.broadcast.emit('updateContent-keyup', data);
+    });
+
+    // Handle typing event
+    socket.on('updateContent-keypress', function(data){
+        console.log('socket data',data);
+        socket.broadcast.emit('updateContent-keypress', data);
+    });
 });
