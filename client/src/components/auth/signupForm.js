@@ -42,6 +42,10 @@ class Signup extends Component {
   }
 
   render() {
+    console.log("signUpform : ",this.props.isLogin);
+    if(!(this.props.isLogin===undefined)){
+      this.props.history.replace("/");
+    }
     const formInputStyle = {
       fontSize: '1.3em',
       fontFamily: "san-frans",

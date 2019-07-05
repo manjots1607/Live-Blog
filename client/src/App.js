@@ -17,6 +17,20 @@ class App extends  Component{
   state={
     user:undefined
   }
+  componentDidMount(){
+    Axios.get("http://localhost:5000/api/curUser")
+    .then(res=>{
+      console.log(res);
+      if(!(res.data==="")){
+        this.setState({user:res.data});
+      }
+
+      
+    })
+    .catch(err=>{
+      console.log(err);
+    });
+  }
 
   loginHandler=(user)=>{
     this.setState({user});
@@ -40,7 +54,9 @@ class App extends  Component{
               render={(props) => <Signup {...props} isLogin={this.state.user} login={this.loginHandler} />}
             />
             <Route exact path="/blog/:blogId" component={DisplayBlog}/>
-            <Route exact path="/blog/:blogId/edit" component={UpdateBlog}/>
+            <Route exact path="/blog/:blogId/edit"  
+              render={(props) => <UpdateBlog {...props} isLogin={this.state.user} />}
+            />
           </Switch>
         </div>
       </BrowserRouter>

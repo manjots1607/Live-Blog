@@ -17,7 +17,7 @@ class UpdateBlog extends Component{
     this.handleKeyPress = this.handleKeyPress.bind(this);
     this.handleKeyUp = this.handleKeyUp.bind(this);
   }
-
+  
   componentDidMount()
   {
     axios.get(`http://localhost:5000/blog-api/${this.props.match.params.blogId}`)
@@ -26,13 +26,27 @@ class UpdateBlog extends Component{
       const {authorURL,username} = res.data.author;
       const blogId = res.data._id;
       this.setState({title,authorURL,imageURL,content,username,blogId});
+      if(res.data.curUser){
+        if(username!==res.data.curUser.username ){
+          
+          this.props.history.goBack();
+        }
+      }else{
+        this.props.history.goBack();
+      }
+      
     })
     .catch(err=>{
       console.log(this.props.match.params.blogId);
       console.log(err);
-    })
+    });
+    
+
   }
 
+  componentWillUnmount(){
+    socket.disconnect();    
+  }
   handleChange(e){
     this.setState({[e.target.name]:e.target.value});
   };
@@ -83,6 +97,7 @@ class UpdateBlog extends Component{
 
         axios.put(`http://localhost:5000/blog-api/${this.state.blogId}`,{title:this.state.title,content:this.state.content,imageURL:this.state.imageURL})
           .then(res=>{
+            
             const updating = document.getElementById('updating');
             updating.innerText = "Saving...";
             setTimeout(()=>{
@@ -129,6 +144,7 @@ class UpdateBlog extends Component{
 }
 
   render(){
+    
     const {title,imageURL,content,authorURL,username} = this.state;
     const contentStyle = {
       width:'80vw',
@@ -136,8 +152,7 @@ class UpdateBlog extends Component{
       border:'none',
       fontSize:'1.2em'
     }
-
-
+    
     return title ===""?<p>Some fancy annimation</p>:(
       <div className="container mt-5">
         <p id="updating" style={{position:'fixed',top:'10px',zIndex:'3',fontWeight:'bold',color:'blue',fontSize:'1.2em',width:'80vw'}} className="align-center"></p>
