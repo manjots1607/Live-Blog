@@ -23,11 +23,37 @@
   color: #61dafb;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
+@keyframes cursorAnimation {
+  0% {
+    opacity: 1;
   }
-  to {
-    transform: rotate(360deg);
+  35%{
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
+  65%{
+    opacity: 1;
+  }
+  100%{
+    opacity: 1;
+  }
+}
+
+.card{
+  max-width: 90%;
+  transition: 0.4s;
+}
+@media (min-width:500px){
+  .card:hover{
+    transform: scale(1.05);
+  
+  }
+}
+
+@media (max-width:400px){
+  .authCardTxt{
+    font-size: 12px;
   }
 }

@@ -16,6 +16,20 @@ router.get("/",(req,res)=>{
     // res.json({msg:"here will be all list of blogs!!!"});
 });
 
+router.post('/search',(req,res)=>{
+  var title = req.body.titleSearch;
+  const regex = new RegExp(escapeRegex(title), 'gi');
+        db.Blog.find({title: regex})
+           .then(blogs=>{
+             console.log(blogs);
+             res.json(blogs);
+           })
+           .catch((err)=>{
+               console.log(err);
+               res.json(err);
+           });
+});
+
 router.post("/",(req,res)=>{
     // code to add new blog
    var formData = req.body;
@@ -39,10 +53,15 @@ router.post("/",(req,res)=>{
 
 router.get("/:id",(req,res)=>{
     // code to show one blog
-    console.log("Blog request");
+    let a={};
+    
     db.Blog.findById(req.params.id)
     .then((foundBlog)=>{
-        res.json(foundBlog);
+        a=JSON.parse(JSON.stringify(foundBlog));
+        a.curUser=req.user;
+        
+
+        res.json(a);
     }).catch((err)=>{
         console.log(err);
         res.status(404).json(err);
@@ -52,6 +71,7 @@ router.get("/:id",(req,res)=>{
 
 router.put("/:id",(req,res)=>{
     //logic to update blog
+    console.log("updating blog");
     db.Blog.findByIdAndUpdate(req.params.id,req.body,{new:true})
     .then((updatedBlog)=>{
         res.json(updatedBlog);
@@ -73,5 +93,7 @@ router.delete("/:id",(req,res)=>{
     });
 
 });
-
+function escapeRegex(text) {
+    return text.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&");
+}
 module.exports=router;

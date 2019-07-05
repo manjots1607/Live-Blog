@@ -7,6 +7,7 @@ const          express = require('express'),
               session = require("express-session"),
             bodyParser = require("body-parser"),
                   cors = require("cors"),
+                socket = require('socket.io'),
                    app = express();
 
 
@@ -25,6 +26,7 @@ passport.serializeUser(db.User.serializeUser());
 passport.deserializeUser(db.User.deserializeUser());
 
 //To remove the Access-Control-Allow-Origin error
+
 // app.use((req,res,next)=>{
 //   res.header("Access-Control-Allow-Origin","*");
 //   res.header("Access-Control-Allow-Headers","Origin,X-Requested-With,Content-Type,Accept");
@@ -34,7 +36,7 @@ passport.deserializeUser(db.User.deserializeUser());
 
 app.use(cors({
   origin:['http://localhost:3000'],
-  methods:['GET','POST'],
+  methods:['GET','POST','PUT','DELETE'],
   credentials: true // enable set cookie
 }));
 
@@ -51,7 +53,9 @@ app.get("/",(req,res)=>{
     res.json({msg:"HelloWorld!!! from app.js"});
 });
 app.use("/blog-api/",BlogRoutes);
-
+app.get("/api/curUser",(req,res)=>{
+  res.json(req.user);
+});
 //auth routes
 app.post("/api/register",(req,res)=>{
   db.User.register(new db.User({username:req.body.username}),req.body.password,(err,user)=>{
@@ -89,6 +93,56 @@ app.get("/api/err",(req,res)=>{
 
 
 const port=process.env.PORT || 5000;
-app.listen( port,()=>{
+var server=app.listen( port,()=>{
     console.log("app running on: " + port);
+});
+
+var io = socket(server);
+io.on('connection', (socket) => {
+
+
+    console.log('made socket connection', socket.request.headers.referer);
+    
+    var chkurl=socket.request.headers.referer.split("/");
+    chkurl.splice(chkurl.length-2,1);
+    chkurl=chkurl.join("/");
+    console.log(chkurl);
+    if(chkurl==="http://localhost:3000/blog/edit"){
+      console.log("here!!!");
+      const url=socket.request.headers.referer.split("/");
+      const blogId=url[url.length-2];
+      db.Blog.findByIdAndUpdate(blogId,{isLive:true},{new:true})
+      .then((updatedBlog)=>{
+        console.log("socket Update: ",updatedBlog);
+      })
+      .catch((err)=>{
+        console.log(err);
+      });
+    }
+    // Handle chat event
+    socket.on('updateContent-keyup', function(data){
+        console.log('socket data',data);
+        socket.broadcast.emit('updateContent-keyup', data);
+    });
+
+    // Handle typing event
+    socket.on('updateContent-keypress', function(data){
+        console.log('socket data',data);
+        socket.broadcast.emit('updateContent-keypress', data);
+    });
+    socket.on('disconnect',function(){
+      if(chkurl==="http://localhost:3000/blog/edit"){
+      console.log("here!!!");
+      const url=socket.request.headers.referer.split("/");
+      const blogId=url[url.length-2];
+      db.Blog.findByIdAndUpdate(blogId,{isLive:false},{new:true})
+      .then((updatedBlog)=>{
+        console.log("socket Update: ",updatedBlog);
+      })
+      .catch((err)=>{
+        console.log(err);
+      });
+    }
+      console.log("user disconnecting..");
+    })
 });

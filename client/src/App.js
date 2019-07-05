@@ -6,13 +6,30 @@ import Signup from './components/auth/signupForm';
 import Nav from './components/layout/nav';
 import CreateBlog from './components/blog/createBlog';
 import Dashboard from './components/dashboard/dashboard';
+import Temp from './components/dashboard/temp';
+import DashboardSearch from './components/dashboard/dashboardSearch';
 import DisplayBlog from './components/blog/displayBlog';
+import UpdateBlog from './components/blog/updateBlog';
 import Axios from 'axios';
 
 class App extends  Component{
 
   state={
     user:undefined
+  }
+  componentDidMount(){
+    Axios.get("http://localhost:5000/api/curUser")
+    .then(res=>{
+      console.log(res);
+      if(!(res.data==="")){
+        this.setState({user:res.data});
+      }
+
+      
+    })
+    .catch(err=>{
+      console.log(err);
+    });
   }
 
   loginHandler=(user)=>{
@@ -27,6 +44,8 @@ class App extends  Component{
           <Nav user={this.state.user} logout={this.loginHandler} />
           <Switch>
             <Route exact path='/' component={Dashboard} />
+            <Route exact path='/temp' component={Temp} />
+            <Route exact path='/search' component={DashboardSearch} />
             <Route exact path='/createBlog' component={CreateBlog}/>
             <Route exact path="/signin"
               render={(props) => <Signin {...props} isLogin={this.state.user} login={this.loginHandler} />}
@@ -35,6 +54,9 @@ class App extends  Component{
               render={(props) => <Signup {...props} isLogin={this.state.user} login={this.loginHandler} />}
             />
             <Route exact path="/blog/:blogId" component={DisplayBlog}/>
+            <Route exact path="/blog/:blogId/edit"  
+              render={(props) => <UpdateBlog {...props} isLogin={this.state.user} />}
+            />
           </Switch>
         </div>
       </BrowserRouter>

@@ -27,7 +27,7 @@ class CreateBlog extends Component{
         this.setState({title:"",
               content:"",
               imageURL:''});
-              this.props.history.push('/');
+              this.props.history.push(`/blog/${res.data._id}/edit`);
       })
       .catch((err)=>{
 
