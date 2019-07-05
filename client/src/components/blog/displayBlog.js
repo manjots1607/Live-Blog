@@ -1,7 +1,7 @@
 import React,{Component} from 'react';
 import axios from 'axios';
 import openSocket from 'socket.io-client';
-  
+
 
 
 class DisplayBlog extends Component{
@@ -14,7 +14,8 @@ class DisplayBlog extends Component{
       imageURL:'',
       content:'',
       blogId:'',
-      isLive:false
+      isLive:false,
+      cursor:-1
     };
     this.socket = openSocket('http://localhost:5000');
   }
@@ -55,7 +56,7 @@ class DisplayBlog extends Component{
               data.x=10;
             }
             const par = displayBlog.state.content===''?'': displayBlog.state.content.substring(0,data.a)+String.fromCharCode(data.x) + displayBlog.state.content.substring(data.b);
-            displayBlog.setState({content:par});
+            displayBlog.setState({content:par,cursor:data.a+1});
         }
       });
 
@@ -69,11 +70,11 @@ class DisplayBlog extends Component{
          if(data.a===data.b){
             if(data.x==8){
               const par = displayBlog.state.content.substring(0,data.a) + displayBlog.state.content.substring(data.b+1);
-              displayBlog.setState({content:par});
+              displayBlog.setState({content:par,cursor:data.a});
             }else if(data.x==32){
               console.log("space coming",data.a,data.b);
               const par = displayBlog.state.content.substring(0,data.a-1) +" " + displayBlog.state.content.substring(data.a-1);
-              displayBlog.setState({content:par});
+              displayBlog.setState({content:par,cursor:data.a+1});
             }
           }else{  //Selected more than 1 character
             console.log(data);
@@ -92,44 +93,44 @@ class DisplayBlog extends Component{
   }
 
   componentWillUnmount(){
-    this.socket.disconnect();    
+    this.socket.disconnect();
   }
 
   render(){
     const liveCursorStyle={
       color:'green',
       fontSize:'24px',
-      fontWeight:'600',
-      animation:'cursorAnimation 0.3s infinite',
-      position:'relative',
-      left:'3px'
+      fontWeight:'20px',
+      animation:'cursorAnimation 0.5s infinite'
+      // position:'relative',
+      // left:'3px'
     };
     const authorStyle={
       backgroundColor:'green',
-      fontSize:'8px',
+      fontSize:'10px',
       color:'white',
+      zIndex: '3',
       position:'Relative',
-      top:'-10px',
-      
+      top:'-18px'
     }
-    const {title,imageURL,content,authorURL,username} = this.state;
+    const {title,imageURL,authorURL,username} = this.state;
+    var {content} = this.state;
+    content = this.state.cursor==-1?content:content.substring(0,this.state.cursor)+'%$'+content.substring(this.state.cursor); //%$ is just a symbol
     var modifiedContentarr=content.split('\n');
-    var modifiedContent = modifiedContentarr.map((e,i)=>{
-      if(i===modifiedContentarr.length-1){
-        return(
-          <p className="text-left updateParagraph" style={{fontSize:'1.3em'}}>
-          {e }
-          {this.state.isLive?
-          <React.Fragment><span style={liveCursorStyle}>|</span><span style={authorStyle} >{username}</span></React.Fragment>
-          :null}
-          
-          </p>
-        )
-      }
+    var modifiedContent2 = modifiedContentarr.map((e,i)=>{
       return(
         <p className="text-left updateParagraph" style={{fontSize:'1.3em'}}>{e}</p>
       )
-      
+    });
+    console.log(modifiedContent2[0].props.children);
+  const modifiedContent =  modifiedContent2.map(function(p){
+      const list = p.props.children.split('%$');
+      console.log(p);
+      if(list.length == 1){
+        return p;
+      }else{
+        return <p className="text-left updateParagraph" style={{fontSize:'1.3em'}}><span>{list[0]}</span><span style={liveCursorStyle}>|</span><span style={authorStyle} >Updating</span><span>{list[1]}</span></p>
+      }
     });
     return title ===""?<p>Some fancy annimation</p>:(
       <div className="container mt-5">
