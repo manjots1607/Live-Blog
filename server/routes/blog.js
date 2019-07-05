@@ -53,10 +53,15 @@ router.post("/",(req,res)=>{
 
 router.get("/:id",(req,res)=>{
     // code to show one blog
-    console.log("Blog request");
+    let a={};
+    
     db.Blog.findById(req.params.id)
     .then((foundBlog)=>{
-        res.json(foundBlog);
+        a=JSON.parse(JSON.stringify(foundBlog));
+        a.curUser=req.user;
+        
+
+        res.json(a);
     }).catch((err)=>{
         console.log(err);
         res.status(404).json(err);

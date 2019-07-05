@@ -36,7 +36,7 @@ passport.deserializeUser(db.User.deserializeUser());
 
 app.use(cors({
   origin:['http://localhost:3000'],
-  methods:['GET','POST','PUT'],
+  methods:['GET','POST','PUT','DELETE'],
   credentials: true // enable set cookie
 }));
 
@@ -53,7 +53,9 @@ app.get("/",(req,res)=>{
     res.json({msg:"HelloWorld!!! from app.js"});
 });
 app.use("/blog-api/",BlogRoutes);
-
+app.get("/api/curUser",(req,res)=>{
+  res.json(req.user);
+});
 //auth routes
 app.post("/api/register",(req,res)=>{
   db.User.register(new db.User({username:req.body.username}),req.body.password,(err,user)=>{
@@ -98,7 +100,25 @@ var server=app.listen( port,()=>{
 var io = socket(server);
 io.on('connection', (socket) => {
 
-    console.log('made socket connection', socket.id);
+
+    console.log('made socket connection', socket.request.headers.referer);
+    
+    var chkurl=socket.request.headers.referer.split("/");
+    chkurl.splice(chkurl.length-2,1);
+    chkurl=chkurl.join("/");
+    console.log(chkurl);
+    if(chkurl==="http://localhost:3000/blog/edit"){
+      console.log("here!!!");
+      const url=socket.request.headers.referer.split("/");
+      const blogId=url[url.length-2];
+      db.Blog.findByIdAndUpdate(blogId,{isLive:true},{new:true})
+      .then((updatedBlog)=>{
+        console.log("socket Update: ",updatedBlog);
+      })
+      .catch((err)=>{
+        console.log(err);
+      });
+    }
     // Handle chat event
     socket.on('updateContent-keyup', function(data){
         console.log('socket data',data);
@@ -110,4 +130,19 @@ io.on('connection', (socket) => {
         console.log('socket data',data);
         socket.broadcast.emit('updateContent-keypress', data);
     });
+    socket.on('disconnect',function(){
+      if(chkurl==="http://localhost:3000/blog/edit"){
+      console.log("here!!!");
+      const url=socket.request.headers.referer.split("/");
+      const blogId=url[url.length-2];
+      db.Blog.findByIdAndUpdate(blogId,{isLive:false},{new:true})
+      .then((updatedBlog)=>{
+        console.log("socket Update: ",updatedBlog);
+      })
+      .catch((err)=>{
+        console.log(err);
+      });
+    }
+      console.log("user disconnecting..");
+    })
 });

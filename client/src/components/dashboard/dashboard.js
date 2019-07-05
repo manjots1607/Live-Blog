@@ -26,7 +26,7 @@ class Dashboard extends Component{
   render(){
     return (
       <div className="container">
-        <div className="row">
+        <div className="row" >
           <BlogList blogs={this.state.blogs}/>
         </div>
       </div>

@@ -1,7 +1,7 @@
 import React,{Component} from 'react';
 import axios from 'axios';
 import openSocket from 'socket.io-client';
-const  socket = openSocket('http://localhost:5000');
+  
 
 
 class DisplayBlog extends Component{
@@ -13,8 +13,21 @@ class DisplayBlog extends Component{
       username:'',
       imageURL:'',
       content:'',
-      blogId:''
+      blogId:'',
+      isLive:false
     };
+    this.socket = openSocket('http://localhost:5000');
+  }
+  delHandler=()=>{
+    axios.delete(`http://localhost:5000/blog-api/${this.props.match.params.blogId}`)
+    .then(res=>{
+      if(res.data.msg==="deleted Successfully"){
+        this.props.history.push("/");
+      }
+    })
+    .catch(err=>{
+      console.log(err);
+    });
   }
   componentDidMount(){
     const displayBlog = this;
@@ -23,14 +36,15 @@ class DisplayBlog extends Component{
         const {title,imageURL,content} = res.data
         const {authorURL,username} = res.data.author;
         const blogId = res.data._id;
-        this.setState({title,authorURL,imageURL,content,username,blogId});
+        const isLive=res.data.isLive;
+        this.setState({title,authorURL,imageURL,content,username,blogId,isLive});
       })
       .catch(err=>{
         console.log(this.props.match.params.blogId);
         console.log(err);
       });
 
-      socket.on('updateContent-keypress',function (data) {
+      this.socket.on('updateContent-keypress',function (data) {
         const updating = document.getElementById('updating');
         updating.innerText = "Updating...";
         setTimeout(()=>{
@@ -45,7 +59,7 @@ class DisplayBlog extends Component{
         }
       });
 
-      socket.on('updateContent-keyup',function (data) {
+      this.socket.on('updateContent-keyup',function (data) {
         const updating = document.getElementById('updating');
         updating.innerText = "Updating...";
         setTimeout(()=>{
@@ -77,11 +91,46 @@ class DisplayBlog extends Component{
       });
   }
 
+  componentWillUnmount(){
+    this.socket.disconnect();    
+  }
+
   render(){
+    const liveCursorStyle={
+      color:'green',
+      fontSize:'24px',
+      fontWeight:'600',
+      animation:'cursorAnimation 0.3s infinite',
+      position:'relative',
+      left:'3px'
+    };
+    const authorStyle={
+      backgroundColor:'green',
+      fontSize:'8px',
+      color:'white',
+      position:'Relative',
+      top:'-10px',
+      
+    }
     const {title,imageURL,content,authorURL,username} = this.state;
-    var modifiedContent = content.split('\n').map(e=>(
-      <p className="text-left updateParagraph" style={{fontSize:'1.3em'}}>{e}</p>
-    ));
+    var modifiedContentarr=content.split('\n');
+    var modifiedContent = modifiedContentarr.map((e,i)=>{
+      if(i===modifiedContentarr.length-1){
+        return(
+          <p className="text-left updateParagraph" style={{fontSize:'1.3em'}}>
+          {e }
+          {this.state.isLive?
+          <React.Fragment><span style={liveCursorStyle}>|</span><span style={authorStyle} >{username}</span></React.Fragment>
+          :null}
+          
+          </p>
+        )
+      }
+      return(
+        <p className="text-left updateParagraph" style={{fontSize:'1.3em'}}>{e}</p>
+      )
+      
+    });
     return title ===""?<p>Some fancy annimation</p>:(
       <div className="container mt-5">
       <p id="updating" style={{position:'fixed',top:'10px',zIndex:'3',fontWeight:'bold',color:'blue',fontSize:'1.2em',width:'80vw'}} className="align-center"></p>
@@ -92,6 +141,7 @@ class DisplayBlog extends Component{
               <img src={authorURL} style={{borderRadius:'50%',width:'80px'}} className="float-left"/>
               <span className="float-left text-primary ml-4" style={{fontSize:'1.3em',position:'relative',top:'20px'}}>{username}</span>
               <button className="btn-sm btn btn-outline-secondary float-left ml-5" style={{position:'relative',top:'20px'}}>Follow</button>
+              <button className="btn-sm btn btn-outline-danger float-left ml-5" onClick={this.delHandler} style={{position:'relative',top:'20px'}}>Delete</button>
             </div>
           </div>
           <div className="col-md-6 sm-12">

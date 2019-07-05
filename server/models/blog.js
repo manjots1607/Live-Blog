@@ -21,6 +21,10 @@ var blogSchema=new mongoose.Schema({
     created_date:{
         type:Date,
         default:Date.now()
+    },
+    isLive:{
+        type:Boolean,
+        default:false
     }
 });
 

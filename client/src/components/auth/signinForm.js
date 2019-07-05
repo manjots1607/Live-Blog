@@ -13,7 +13,7 @@ class Signin extends Component{
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleChange = this.handleChange.bind(this);
   }
-
+  
 
   handleSubmit(e){
     e.preventDefault();
@@ -45,6 +45,10 @@ class Signin extends Component{
   }
 
   render(){
+    console.log("SignInForm.js: ",this.props)
+    if(!(this.props.isLogin===undefined)){
+      this.props.history.replace("/");
+    }
     const formInputStyle = {
       fontSize: '1.3em',
       fontFamily:"san-frans",
