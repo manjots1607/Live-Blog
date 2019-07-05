@@ -1,32 +1,22 @@
 import React, {Component} from 'react';
 import BlogList from '../blog/blogList';
-import axios from 'axios';
 
-class Dashboard extends Component{
+class DashboardSearch extends Component{
   constructor(props){
     super(props);
     this.state = {
       blogs:[]
     }
   }
-
   componentDidMount(){
-
-    axios.get("http://localhost:5000/blog-api/")
-      .then(res=>{
-        this.setState({
-          blogs:res.data
-        });
-      })
-      .catch(err=>{
-
-      })
+    this.setState({blogs:this.props.location.state.result})
   }
 
-  render(){
+    render(){
+    console.log(this.props.location.state);
     return (
       <div className="container">
-        <div className="row" >
+        <div className="row">
           <BlogList blogs={this.state.blogs}/>
         </div>
       </div>
@@ -34,4 +24,4 @@ class Dashboard extends Component{
   }
 }
 
-export default Dashboard;
+export default DashboardSearch;
