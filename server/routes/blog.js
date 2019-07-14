@@ -30,6 +30,19 @@ router.post('/search',(req,res)=>{
            });
 });
 
+router.post('/search/genre',(req,res)=>{
+  var genre = req.body.genre;
+        db.Blog.find({genre})
+           .then(blogs=>{
+             console.log(blogs);
+             res.json(blogs);
+           })
+           .catch((err)=>{
+               console.log(err);
+               res.json(err);
+           });
+});
+
 router.post("/",(req,res)=>{
     // code to add new blog
    var formData = req.body;
@@ -54,12 +67,12 @@ router.post("/",(req,res)=>{
 router.get("/:id",(req,res)=>{
     // code to show one blog
     let a={};
-    
+
     db.Blog.findById(req.params.id)
     .then((foundBlog)=>{
         a=JSON.parse(JSON.stringify(foundBlog));
         a.curUser=req.user;
-        
+
 
         res.json(a);
     }).catch((err)=>{

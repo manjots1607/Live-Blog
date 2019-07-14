@@ -25,6 +25,10 @@ var blogSchema=new mongoose.Schema({
     isLive:{
         type:Boolean,
         default:false
+    },
+    genre:{
+      type:String,
+      default:"other"
     }
 });
 

@@ -15,10 +15,18 @@ class DisplayBlog extends Component{
       content:'',
       blogId:'',
       isLive:false,
-      cursor:-1
+      cursor:-1,
+      isAuthorised:true
     };
     this.socket = openSocket('http://localhost:5000');
+    this.handleEdit = this.handleEdit.bind(this);
+    this.delHandler = this.delHandler.bind(this);
   }
+
+  handleEdit = function(){
+    this.props.history.push(`/blog/${this.props.match.params.blogId}/edit`)
+  }
+
   delHandler=()=>{
     axios.delete(`http://localhost:5000/blog-api/${this.props.match.params.blogId}`)
     .then(res=>{
@@ -38,7 +46,8 @@ class DisplayBlog extends Component{
         const {authorURL,username} = res.data.author;
         const blogId = res.data._id;
         const isLive=res.data.isLive;
-        this.setState({title,authorURL,imageURL,content,username,blogId,isLive});
+        const isAuthorised = res.data.curUser?res.data.author.id===res.data.curUser._id:false;
+        this.setState({title,authorURL,imageURL,content,username,blogId,isLive,isAuthorised});
       })
       .catch(err=>{
         console.log(this.props.match.params.blogId);
@@ -72,12 +81,10 @@ class DisplayBlog extends Component{
               const par = displayBlog.state.content.substring(0,data.a) + displayBlog.state.content.substring(data.b+1);
               displayBlog.setState({content:par,cursor:data.a});
             }else if(data.x==32){
-              console.log("space coming",data.a,data.b);
               const par = displayBlog.state.content.substring(0,data.a-1) +" " + displayBlog.state.content.substring(data.a-1);
               displayBlog.setState({content:par,cursor:data.a+1});
             }
           }else{  //Selected more than 1 character
-            console.log(data);
             if(data.x==8){
               if(displayBlog.state.content[data.a-2]==='\\'){
                 const par = displayBlog.state.content.substring(0,data.a-1) + displayBlog.state.content.substring(data.b);
@@ -122,10 +129,8 @@ class DisplayBlog extends Component{
         <p className="text-left updateParagraph" style={{fontSize:'1.3em'}}>{e}</p>
       )
     });
-    console.log(modifiedContent2[0].props.children);
   const modifiedContent =  modifiedContent2.map(function(p){
       const list = p.props.children.split('%$');
-      console.log(p);
       if(list.length == 1){
         return p;
       }else{
@@ -141,8 +146,9 @@ class DisplayBlog extends Component{
             <div>
               <img src={authorURL} style={{borderRadius:'50%',width:'80px'}} className="float-left"/>
               <span className="float-left text-primary ml-4" style={{fontSize:'1.3em',position:'relative',top:'20px'}}>{username}</span>
-              <button className="btn-sm btn btn-outline-secondary float-left ml-5" style={{position:'relative',top:'20px'}}>Follow</button>
-              <button className="btn-sm btn btn-outline-danger float-left ml-5" onClick={this.delHandler} style={{position:'relative',top:'20px'}}>Delete</button>
+              {!(this.state.isAuthorised)?<button className="btn-sm btn btn-outline-secondary float-left ml-2" style={{position:'relative',top:'20px'}}>Follow</button>:null}
+              {this.state.isAuthorised?<button className="btn-sm btn btn-outline-danger float-left ml-2" onClick={this.delHandler} style={{position:'relative',top:'20px'}}>Delete</button>:null}
+              {this.state.isAuthorised?<button className="btn-sm btn btn-outline-primary float-left ml-2" onClick={this.handleEdit} style={{position:'relative',top:'20px'}}>Edit</button>:null}
             </div>
           </div>
           <div className="col-md-6 sm-12">
