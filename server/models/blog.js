@@ -29,6 +29,10 @@ var blogSchema=new mongoose.Schema({
     genre:{
       type:String,
       default:"other"
+    },
+    likes:{
+      type:Number,
+      default:0
     }
 });
 

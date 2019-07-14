@@ -46,6 +46,7 @@ class DisplayBlog extends Component{
         const {authorURL,username} = res.data.author;
         const blogId = res.data._id;
         const isLive=res.data.isLive;
+        console.log(res.data.curUser._id,res.data.author.id);
         const isAuthorised = res.data.curUser?res.data.author.id===res.data.curUser._id:false;
         this.setState({title,authorURL,imageURL,content,username,blogId,isLive,isAuthorised});
       })
@@ -139,7 +140,7 @@ class DisplayBlog extends Component{
     });
     return title ===""?<p>Some fancy annimation</p>:(
       <div className="container mt-5">
-      <p id="updating" style={{position:'fixed',top:'10px',zIndex:'3',fontWeight:'bold',color:'blue',fontSize:'1.2em',width:'80vw'}} className="align-center"></p>
+      <p id="updating" style={{position:'fixed',top:'60px',zIndex:'10',fontWeight:'bold',color:'blue',fontSize:'1.2em',width:'80vw'}} className="align-center"></p>
         <div className="row mb-5">
           <div className="col-md-6 sm-12">
             <h1 className="allign-middle mb-5 text-left">{title}</h1>
