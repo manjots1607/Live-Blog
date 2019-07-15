@@ -1,8 +1,7 @@
 import React,{Component} from 'react';
 import axios from 'axios';
 import openSocket from 'socket.io-client';
-
-
+import Comments from './Comments/Comments';
 
 class DisplayBlog extends Component{
   constructor(props){
@@ -19,7 +18,8 @@ class DisplayBlog extends Component{
       isAuthorised:true,
       liked:false,
       likesCount:0,
-      bookmark:false
+      bookmark:false,
+      comments:[]
     };
     this.socket = openSocket('http://localhost:5000');
     this.handleEdit = this.handleEdit.bind(this);
@@ -71,7 +71,9 @@ class DisplayBlog extends Component{
         const bookmark = res.data.bookmarks.includes(res.data.curUser._id);
         const isLive=res.data.isLive;
         const isAuthorised = res.data.curUser?res.data.author.id===res.data.curUser._id:false;
-        this.setState({title,authorURL,imageURL,content,username,blogId,isLive,isAuthorised,liked,likesCount,bookmark});
+        
+        const comments=res.data.comments;
+        this.setState({title,authorURL,imageURL,content,username,blogId,isLive,isAuthorised,liked,likesCount,bookmark,comments});
       })
       .catch(err=>{
         console.log(this.props.match.params.blogId);
@@ -190,6 +192,7 @@ class DisplayBlog extends Component{
         <span className="text-primary">{this.state.likesCount} </span>Like{this.state.likesCount>1?"s":null}{this.state.liked?<i className="fa fa-heart text-danger" aria-hidden="true" onClick={this.handleLike}></i>:<i className="fa fa-heart-o text-danger" aria-hidden="true" onClick={this.handleLike}></i>}
         <span className="ml-5 mr-5">{this.state.bookmark?<i class="fa fa-bookmark" aria-hidden="true" onClick={this.handleBookmark}> Bookmarked</i>:<i class="fa fa-bookmark-o" aria-hidden="true" onClick={this.handleBookmark}> Bookmark</i>}</span>
         </div>
+        <Comments authorURL={authorURL} comments={this.state.comments}/> 
       </div>
     );
   }
