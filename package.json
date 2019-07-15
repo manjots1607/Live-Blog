@@ -1,0 +1,24 @@
+{
+  "name": "Live-Blog",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "concurrently \"cd server && node server.js\" \"cd client && npm start\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/manjots1607/Live-Blog.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/manjots1607/Live-Blog/issues"
+  },
+  "homepage": "https://github.com/manjots1607/Live-Blog#readme",
+  "dependencies": {
+    "concurrently": "^4.1.1"
+  }
+}
