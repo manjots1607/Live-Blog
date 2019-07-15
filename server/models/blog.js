@@ -25,7 +25,21 @@ var blogSchema=new mongoose.Schema({
     isLive:{
         type:Boolean,
         default:false
-    }
+    },
+    genre:{
+      type:String,
+      default:"other"
+    },
+    likes:[
+      {
+        type:String
+      }
+    ],
+    bookmarks:[
+      {
+        type:String
+      }
+    ]
 });
 
 module.exports=mongoose.model("blog",blogSchema);

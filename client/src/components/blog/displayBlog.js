@@ -1,7 +1,7 @@
 import React,{Component} from 'react';
 import axios from 'axios';
 import openSocket from 'socket.io-client';
-  
+
 
 
 class DisplayBlog extends Component{
@@ -14,10 +14,39 @@ class DisplayBlog extends Component{
       imageURL:'',
       content:'',
       blogId:'',
-      isLive:false
+      isLive:false,
+      cursor:-1,
+      isAuthorised:true,
+      liked:false,
+      likesCount:0,
+      bookmark:false
     };
     this.socket = openSocket('http://localhost:5000');
+    this.handleEdit = this.handleEdit.bind(this);
+    this.handleLike = this.handleLike.bind(this);
+    this.handleBookmark = this.handleBookmark.bind(this);
+    this.delHandler = this.delHandler.bind(this);
   }
+
+  handleBookmark = function(){
+    axios.post(`http://localhost:5000/blog-api/${this.props.match.params.blogId}/bookmark`,{add:!this.state.bookmark});
+    var bookmark = this.state.bookmark;
+    bookmark = !bookmark;
+    this.setState({bookmark})
+  }
+
+  handleEdit = function(){
+    this.props.history.push(`/blog/${this.props.match.params.blogId}/edit`)
+  }
+
+  handleLike = function(){
+    axios.post(`http://localhost:5000/blog-api/${this.props.match.params.blogId}/likes`,{add:!this.state.liked});
+    var {liked,likesCount} = this.state;
+    liked = !liked;
+    this.state.liked?likesCount--:likesCount++;
+    this.setState({liked,likesCount});
+  }
+
   delHandler=()=>{
     axios.delete(`http://localhost:5000/blog-api/${this.props.match.params.blogId}`)
     .then(res=>{
@@ -33,11 +62,16 @@ class DisplayBlog extends Component{
     const displayBlog = this;
     axios.get(`http://localhost:5000/blog-api/${this.props.match.params.blogId}`)
       .then(res=>{
+        console.log(res.data.bookmarks);
         const {title,imageURL,content} = res.data
         const {authorURL,username} = res.data.author;
         const blogId = res.data._id;
+        const liked = res.data.likes.includes(res.data.curUser._id);
+        const likesCount = res.data.likes.length;
+        const bookmark = res.data.bookmarks.includes(res.data.curUser._id);
         const isLive=res.data.isLive;
-        this.setState({title,authorURL,imageURL,content,username,blogId,isLive});
+        const isAuthorised = res.data.curUser?res.data.author.id===res.data.curUser._id:false;
+        this.setState({title,authorURL,imageURL,content,username,blogId,isLive,isAuthorised,liked,likesCount,bookmark});
       })
       .catch(err=>{
         console.log(this.props.match.params.blogId);
@@ -55,7 +89,7 @@ class DisplayBlog extends Component{
               data.x=10;
             }
             const par = displayBlog.state.content===''?'': displayBlog.state.content.substring(0,data.a)+String.fromCharCode(data.x) + displayBlog.state.content.substring(data.b);
-            displayBlog.setState({content:par});
+            displayBlog.setState({content:par,cursor:data.a+1});
         }
       });
 
@@ -69,14 +103,12 @@ class DisplayBlog extends Component{
          if(data.a===data.b){
             if(data.x==8){
               const par = displayBlog.state.content.substring(0,data.a) + displayBlog.state.content.substring(data.b+1);
-              displayBlog.setState({content:par});
+              displayBlog.setState({content:par,cursor:data.a});
             }else if(data.x==32){
-              console.log("space coming",data.a,data.b);
               const par = displayBlog.state.content.substring(0,data.a-1) +" " + displayBlog.state.content.substring(data.a-1);
-              displayBlog.setState({content:par});
+              displayBlog.setState({content:par,cursor:data.a+1});
             }
           }else{  //Selected more than 1 character
-            console.log(data);
             if(data.x==8){
               if(displayBlog.state.content[data.a-2]==='\\'){
                 const par = displayBlog.state.content.substring(0,data.a-1) + displayBlog.state.content.substring(data.b);
@@ -92,56 +124,55 @@ class DisplayBlog extends Component{
   }
 
   componentWillUnmount(){
-    this.socket.disconnect();    
+    this.socket.disconnect();
   }
 
   render(){
     const liveCursorStyle={
       color:'green',
       fontSize:'24px',
-      fontWeight:'600',
-      animation:'cursorAnimation 0.3s infinite',
-      position:'relative',
-      left:'3px'
+      fontWeight:'20px',
+      animation:'cursorAnimation 0.5s infinite'
+      // position:'relative',
+      // left:'3px'
     };
     const authorStyle={
       backgroundColor:'green',
-      fontSize:'8px',
+      fontSize:'10px',
       color:'white',
+      zIndex: '3',
       position:'Relative',
-      top:'-10px',
-      
+      top:'-18px'
     }
-    const {title,imageURL,content,authorURL,username} = this.state;
+    const {title,imageURL,authorURL,username} = this.state;
+    var {content} = this.state;
+    content = this.state.cursor==-1?content:content.substring(0,this.state.cursor)+'%$'+content.substring(this.state.cursor); //%$ is just a symbol
     var modifiedContentarr=content.split('\n');
-    var modifiedContent = modifiedContentarr.map((e,i)=>{
-      if(i===modifiedContentarr.length-1){
-        return(
-          <p className="text-left updateParagraph" style={{fontSize:'1.3em'}}>
-          {e }
-          {this.state.isLive?
-          <React.Fragment><span style={liveCursorStyle}>|</span><span style={authorStyle} >{username}</span></React.Fragment>
-          :null}
-          
-          </p>
-        )
-      }
+    var modifiedContent2 = modifiedContentarr.map((e,i)=>{
       return(
         <p className="text-left updateParagraph" style={{fontSize:'1.3em'}}>{e}</p>
       )
-      
+    });
+  const modifiedContent =  modifiedContent2.map(function(p){
+      const list = p.props.children.split('%$');
+      if(list.length == 1){
+        return p;
+      }else{
+        return <p className="text-left updateParagraph" style={{fontSize:'1.3em'}}><span>{list[0]}</span><span style={liveCursorStyle}>|</span><span style={authorStyle} >Updating</span><span>{list[1]}</span></p>
+      }
     });
     return title ===""?<p>Some fancy annimation</p>:(
       <div className="container mt-5">
-      <p id="updating" style={{position:'fixed',top:'10px',zIndex:'3',fontWeight:'bold',color:'blue',fontSize:'1.2em',width:'80vw'}} className="align-center"></p>
+      <p id="updating" style={{position:'fixed',top:'60px',zIndex:'10',fontWeight:'bold',color:'blue',fontSize:'1.2em',width:'80vw'}} className="align-center"></p>
         <div className="row mb-5">
           <div className="col-md-6 sm-12">
             <h1 className="allign-middle mb-5 text-left">{title}</h1>
             <div>
               <img src={authorURL} style={{borderRadius:'50%',width:'80px'}} className="float-left"/>
               <span className="float-left text-primary ml-4" style={{fontSize:'1.3em',position:'relative',top:'20px'}}>{username}</span>
-              <button className="btn-sm btn btn-outline-secondary float-left ml-5" style={{position:'relative',top:'20px'}}>Follow</button>
-              <button className="btn-sm btn btn-outline-danger float-left ml-5" onClick={this.delHandler} style={{position:'relative',top:'20px'}}>Delete</button>
+              {!(this.state.isAuthorised)?<button className="btn-sm btn btn-outline-secondary float-left ml-2" style={{position:'relative',top:'20px'}}>Follow</button>:null}
+              {this.state.isAuthorised?<button className="btn-sm btn btn-outline-danger float-left ml-2" onClick={this.delHandler} style={{position:'relative',top:'20px'}}>Delete</button>:null}
+              {this.state.isAuthorised?<button className="btn-sm btn btn-outline-primary float-left ml-2" onClick={this.handleEdit} style={{position:'relative',top:'20px'}}>Edit</button>:null}
             </div>
           </div>
           <div className="col-md-6 sm-12">
@@ -154,6 +185,10 @@ class DisplayBlog extends Component{
           {modifiedContent}
           </div>
           <div className="col-md-1 col-sm-0"></div>
+        </div>
+        <div style={{fontSize:'1.5em'}}>
+        <span className="text-primary">{this.state.likesCount} </span>Like{this.state.likesCount>1?"s":null}{this.state.liked?<i className="fa fa-heart text-danger" aria-hidden="true" onClick={this.handleLike}></i>:<i className="fa fa-heart-o text-danger" aria-hidden="true" onClick={this.handleLike}></i>}
+        <span className="ml-5 mr-5">{this.state.bookmark?<i class="fa fa-bookmark" aria-hidden="true" onClick={this.handleBookmark}> Bookmarked</i>:<i class="fa fa-bookmark-o" aria-hidden="true" onClick={this.handleBookmark}> Bookmark</i>}</span>
         </div>
       </div>
     );

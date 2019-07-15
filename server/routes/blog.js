@@ -30,6 +30,19 @@ router.post('/search',(req,res)=>{
            });
 });
 
+router.post('/search/genre',(req,res)=>{
+  var genre = req.body.genre;
+        db.Blog.find({genre})
+           .then(blogs=>{
+             console.log(blogs);
+             res.json(blogs);
+           })
+           .catch((err)=>{
+               console.log(err);
+               res.json(err);
+           });
+});
+
 router.post("/",(req,res)=>{
     // code to add new blog
    var formData = req.body;
@@ -54,12 +67,12 @@ router.post("/",(req,res)=>{
 router.get("/:id",(req,res)=>{
     // code to show one blog
     let a={};
-    
+
     db.Blog.findById(req.params.id)
     .then((foundBlog)=>{
         a=JSON.parse(JSON.stringify(foundBlog));
         a.curUser=req.user;
-        
+        console.log(foundBlog.likes);
 
         res.json(a);
     }).catch((err)=>{
@@ -93,6 +106,72 @@ router.delete("/:id",(req,res)=>{
     });
 
 });
+
+router.post("/:id/likes",(req,res)=>{
+  if(!req.user){
+    res.json({msg:"please sign in"});
+  }
+  db.Blog.findById(req.params.id)
+  .then(blog=>{
+    if(req.body.add){
+      if(blog.likes.includes(req.user._id)){
+        res.json({msg:"already liked"});
+      }else{
+        blog.likes.push(req.user._id);
+        blog.save();
+        console.log("no of likes:",blog.likes);
+        res.json({msg:"liked"});
+      }
+    }else{
+      var x = blog.likes.indexOf(req.user._id);
+      if(x>-1){
+        blog.likes.splice(x, 1);
+        blog.save();
+        res.json({msg:"removed from likes"});
+      }else{
+        res.json({msg:"you have not liked it"});
+      }
+    }
+  })
+  .catch(err=>{
+    console.log(err);
+    res.json(err);
+  })
+});
+
+router.post("/:id/bookmark",(req,res)=>{
+  if(!req.user){
+    res.json({msg:"log in please"});
+  }
+  db.Blog.findById(req.params.id)
+    .then(blog=>{
+      if(req.body.add){
+        if(blog.bookmarks.includes(req.user._id)){
+          res.json({msg:"already liked"});
+        }else{
+          blog.bookmarks.push(req.user._id);
+          blog.save();
+          req.user.bookmarks.push(req.params.id);
+          req.user.save();
+          console.log("no of bookmarks:",blog.bookmarks);
+          res.json({msg:"bookmarked"});
+        }
+      }else{
+        var x = blog.bookmarks.indexOf(req.user._id);
+        if(x>-1){
+          blog.bookmarks.splice(x, 1);
+          blog.save();
+          req.user.bookmarks.splice(req.user.bookmarks.indexOf(req.params.id),1);
+          req.user.save();
+          res.json({msg:"removed from likes"});
+        }else{
+          res.json({msg:"you have not liked it"});
+        }
+      }
+    })
+})
+
+
 function escapeRegex(text) {
     return text.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&");
 }
