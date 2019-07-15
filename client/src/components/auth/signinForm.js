@@ -8,13 +8,12 @@ class Signin extends Component{
 
     this.state = {
       email:"",
-      password: "",
-      err:""
+      password: ""
     };
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleChange = this.handleChange.bind(this);
   }
-
+  
 
   handleSubmit(e){
     e.preventDefault();
@@ -31,10 +30,11 @@ class Signin extends Component{
         this.props.history.push('/');
       }
       else{
-        this.setState({err:"Invalid Username or Password"});
+        console.log("there is some problem ");
       }
     }).catch(err=>{
-      this.setState({err:"Invalid Username or Password"});
+      console.log(err);
+      alert(err);
     });
 
   }
@@ -90,7 +90,6 @@ class Signin extends Component{
                       <input className="form-control" type="password" name="password" id="password" value={this.state.password} onChange={this.handleChange} style={formInputStyle}/>
                     </div>
                   </div>
-                  {this.state.err===""?null:<div className="text-danger">{this.state.err}</div>}
                   <div className="form-group row">
                     <div className="col-sm-3 col-md-6"></div>
                     <div className="col-sm-9 col-md-6 text-right"><span className="text-info">Forgot your password?</span></div>

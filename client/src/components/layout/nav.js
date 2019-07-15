@@ -14,25 +14,11 @@ class Nav extends Component{
     }
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
-    this.handleGenre = this.handleGenre.bind(this);
   }
 
   handleChange(e){
     this.setState({[e.target.name]:e.target.value});
   };
-
-  handleGenre(e){
-    e.preventDefault();
-    var genre = e.target.innerText.toLowerCase();
-    axios.post('http://localhost:5000/blog-api/search/genre',{genre})
-      .then(res=>{
-        console.log(res.data);
-        this.props.history.push('/temp', {result:res.data})
-      })
-        .catch(err=>{
-
-        })
-  }
 
   handleSubmit(e){
     e.preventDefault();
@@ -43,14 +29,14 @@ class Nav extends Component{
       })
         .catch(err=>{
 
-        });
+        })
   }
 
   render(){
     var login = this.props.user;
     const links = login?<SigninLinks user={this.props.user} logout={this.props.logout}/>:<SignoutLinks />;
     return(
-      <nav className="navbar navbar-expand-md navbar-light sticky-top" style={{backgroundColor:'#39424E'}}>
+      <nav className="navbar navbar-expand-md navbar-light" style={{backgroundColor:'#39424E'}}>
         <NavLink className="navbar-brand text-white" to="/" >Live Blog</NavLink>
         <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
           <span className="navbar-toggler-icon"></span>
@@ -63,10 +49,9 @@ class Nav extends Component{
               Categories
             </a>
             <div className="dropdown-menu" aria-labelledby="navbarDropdown">
-              <a className="dropdown-item" href="#" onClick={this.handleGenre}>Tech</a>
-              <a className="dropdown-item" href="#" onClick={this.handleGenre}>Culture</a>
-              <a className="dropdown-item" href="#" onClick={this.handleGenre}>Sports</a>
-              <a className="dropdown-item" href="#" onClick={this.handleGenre}>Other</a>
+              <a className="dropdown-item" href="#">Tech</a>
+              <a className="dropdown-item" href="#">Culture</a>
+              <a className="dropdown-item" href="#">Sports</a>
             </div>
           </li>
 
