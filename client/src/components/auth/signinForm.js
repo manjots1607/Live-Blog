@@ -1,12 +1,15 @@
 import React, {Component} from 'react';
 import {Link} from 'react-router-dom';
+import Axios from 'axios';
 
 class Signin extends Component{
   constructor(props){
     super(props);
+
     this.state = {
       email:"",
-      password: ""
+      password: "",
+      err:""
     };
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleChange = this.handleChange.bind(this);
@@ -15,13 +18,37 @@ class Signin extends Component{
 
   handleSubmit(e){
     e.preventDefault();
+
+    Axios.post("http://localhost:5000/api/login",
+          {username:this.state.email,
+           password:this.state.password
+          })
+    .then(res=>{
+      this.props.login(res.data.user);
+
+      if(res.data.success==="true"){
+        this.props.login(res.data.user);
+        this.props.history.push('/');
+      }
+      else{
+        this.setState({err:"Invalid Username or Password"});
+      }
+    }).catch(err=>{
+      this.setState({err:"Invalid Username or Password"});
+    });
+
   }
 
   handleChange(e){
+    //console.log(this.props.login);
     this.setState({[e.target.name]:e.target.value});
   }
 
   render(){
+    console.log("SignInForm.js: ",this.props)
+    if(!(this.props.isLogin===undefined)){
+      this.props.history.replace("/");
+    }
     const formInputStyle = {
       fontSize: '1.3em',
       fontFamily:"san-frans",
@@ -63,6 +90,7 @@ class Signin extends Component{
                       <input className="form-control" type="password" name="password" id="password" value={this.state.password} onChange={this.handleChange} style={formInputStyle}/>
                     </div>
                   </div>
+                  {this.state.err===""?null:<div className="text-danger">{this.state.err}</div>}
                   <div className="form-group row">
                     <div className="col-sm-3 col-md-6"></div>
                     <div className="col-sm-9 col-md-6 text-right"><span className="text-info">Forgot your password?</span></div>
