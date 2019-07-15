@@ -16,15 +16,35 @@ class DisplayBlog extends Component{
       blogId:'',
       isLive:false,
       cursor:-1,
-      isAuthorised:true
+      isAuthorised:true,
+      liked:false,
+      likesCount:0,
+      bookmark:false
     };
     this.socket = openSocket('http://localhost:5000');
     this.handleEdit = this.handleEdit.bind(this);
+    this.handleLike = this.handleLike.bind(this);
+    this.handleBookmark = this.handleBookmark.bind(this);
     this.delHandler = this.delHandler.bind(this);
+  }
+
+  handleBookmark = function(){
+    axios.post(`http://localhost:5000/blog-api/${this.props.match.params.blogId}/bookmark`,{add:!this.state.bookmark});
+    var bookmark = this.state.bookmark;
+    bookmark = !bookmark;
+    this.setState({bookmark})
   }
 
   handleEdit = function(){
     this.props.history.push(`/blog/${this.props.match.params.blogId}/edit`)
+  }
+
+  handleLike = function(){
+    axios.post(`http://localhost:5000/blog-api/${this.props.match.params.blogId}/likes`,{add:!this.state.liked});
+    var {liked,likesCount} = this.state;
+    liked = !liked;
+    this.state.liked?likesCount--:likesCount++;
+    this.setState({liked,likesCount});
   }
 
   delHandler=()=>{
@@ -42,13 +62,16 @@ class DisplayBlog extends Component{
     const displayBlog = this;
     axios.get(`http://localhost:5000/blog-api/${this.props.match.params.blogId}`)
       .then(res=>{
+        console.log(res.data.bookmarks);
         const {title,imageURL,content} = res.data
         const {authorURL,username} = res.data.author;
         const blogId = res.data._id;
+        const liked = res.data.likes.includes(res.data.curUser._id);
+        const likesCount = res.data.likes.length;
+        const bookmark = res.data.bookmarks.includes(res.data.curUser._id);
         const isLive=res.data.isLive;
-        console.log(res.data.curUser._id,res.data.author.id);
         const isAuthorised = res.data.curUser?res.data.author.id===res.data.curUser._id:false;
-        this.setState({title,authorURL,imageURL,content,username,blogId,isLive,isAuthorised});
+        this.setState({title,authorURL,imageURL,content,username,blogId,isLive,isAuthorised,liked,likesCount,bookmark});
       })
       .catch(err=>{
         console.log(this.props.match.params.blogId);
@@ -162,6 +185,10 @@ class DisplayBlog extends Component{
           {modifiedContent}
           </div>
           <div className="col-md-1 col-sm-0"></div>
+        </div>
+        <div style={{fontSize:'1.5em'}}>
+        <span className="text-primary">{this.state.likesCount} </span>Like{this.state.likesCount>1?"s":null}{this.state.liked?<i className="fa fa-heart text-danger" aria-hidden="true" onClick={this.handleLike}></i>:<i className="fa fa-heart-o text-danger" aria-hidden="true" onClick={this.handleLike}></i>}
+        <span className="ml-5 mr-5">{this.state.bookmark?<i class="fa fa-bookmark" aria-hidden="true" onClick={this.handleBookmark}> Bookmarked</i>:<i class="fa fa-bookmark-o" aria-hidden="true" onClick={this.handleBookmark}> Bookmark</i>}</span>
         </div>
       </div>
     );

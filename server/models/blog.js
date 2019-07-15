@@ -30,10 +30,16 @@ var blogSchema=new mongoose.Schema({
       type:String,
       default:"other"
     },
-    likes:{
-      type:Number,
-      default:0
-    }
+    likes:[
+      {
+        type:String
+      }
+    ],
+    bookmarks:[
+      {
+        type:String
+      }
+    ]
 });
 
 module.exports=mongoose.model("blog",blogSchema);
