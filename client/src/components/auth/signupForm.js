@@ -21,7 +21,8 @@ class Signup extends Component {
     Axios.post("http://localhost:5000/api/register",
       {
         username: this.state.email,
-        password: this.state.password
+        password: this.state.password,
+        name:this.state.username
       })
       .then(res => {
         if (res.data.success === "true") {

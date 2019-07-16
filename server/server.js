@@ -58,7 +58,7 @@ app.get("/api/curUser",(req,res)=>{
 });
 //auth routes
 app.post("/api/register",(req,res)=>{
-  db.User.register(new db.User({username:req.body.username}),req.body.password,(err,user)=>{
+  db.User.register(new db.User({username:req.body.username,name:req.body.name}),req.body.password,(err,user)=>{
       if(err){
           console.log(err);
           res.json(err);
@@ -102,7 +102,7 @@ io.on('connection', (socket) => {
 
 
     console.log('made socket connection', socket.request.headers.referer);
-    
+
     var chkurl=socket.request.headers.referer.split("/");
     chkurl.splice(chkurl.length-2,1);
     chkurl=chkurl.join("/");

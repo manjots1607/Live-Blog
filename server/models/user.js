@@ -8,6 +8,7 @@ var userSchema=new mongoose.Schema({
       type:String,
       default: 'https://c8.alamy.com/comp/HBFR2F/male-profile-avatar-with-brown-hair-over-white-background-vector-illustration-HBFR2F.jpg'
     },
+    name:String,
     following:[
       {type: String}
     ],

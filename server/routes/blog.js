@@ -1,4 +1,5 @@
 const express= require('express');
+const mongoose = require("mongoose");
 const router=express.Router();
 const db=require("../models/index");
 
@@ -7,7 +8,7 @@ router.get("/",(req,res)=>{
     db.Blog.find()
     .then((blogs)=>{
 
-        res.json(blogs);
+        res.json(blogs.reverse());
     })
     .catch((err)=>{
         console.log(err);
@@ -17,13 +18,43 @@ router.get("/",(req,res)=>{
     // res.json({msg:"here will be all list of blogs!!!"});
 });
 
+router.get("/mystories",(req,res)=>{
+  if(!req.user){
+    res.json({msg:"sign in required"});
+  }
+  db.Blog.find({"author.username":req.user.name})
+    .then(blogs=>{
+      res.send(blogs.reverse());
+    })
+    .catch(err=>{
+      console.log(err);
+      res.json({err:err.message});
+    });
+});
+
+router.get("/bookmarks",(req,res)=>{
+  console.log("bookmark route");
+  if(!req.user){
+    res.json({msg:"sign in required"});
+  }
+  var obj_ids = req.user.bookmarks.map(function(id) { return mongoose.Types.ObjectId(id); });
+  db.Blog.find({_id: {$in: obj_ids}})
+    .then(blogs=>{
+      res.json(blogs.reverse())
+    })
+    .catch(err=>{
+      console.log(err.message);
+      res.json({msg:"err.message"})
+    })
+});
+
 router.post('/search',(req,res)=>{
   var title = req.body.titleSearch;
   const regex = new RegExp(escapeRegex(title), 'gi');
         db.Blog.find({title: regex})
            .then(blogs=>{
              console.log(blogs);
-             res.json(blogs);
+             res.json(blogs.reverse());
            })
            .catch((err)=>{
                console.log(err);
@@ -36,7 +67,7 @@ router.post('/search/genre',(req,res)=>{
         db.Blog.find({genre})
            .then(blogs=>{
              console.log(blogs);
-             res.json(blogs);
+             res.json(blogs.reverse());
            })
            .catch((err)=>{
                console.log(err);
@@ -50,7 +81,7 @@ router.post("/",(req,res)=>{
    console.log("data reached is ",formData.data);
    var author = {
        id:req.user._id,
-       username:req.user.username,
+       username:req.user.name,
        authorURL:req.user.authorURL
    };
    console.log(author);
