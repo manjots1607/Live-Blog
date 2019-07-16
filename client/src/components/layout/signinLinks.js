@@ -15,6 +15,15 @@ const SignedInLinks = (props)=>{
           console.log(err.message);
         })
     };
+    const handleFollowing = ()=>{
+      Axios.get("http://localhost:5000/blog-api/following")
+        .then(res=>{
+          props.history.push('/temp', {result:res.data});
+        })
+        .catch(err=>{
+          console.log(err.message);
+        })
+    }
 
     const handleBookmarks = ()=>{
       console.log("bookmark clicked");
@@ -51,7 +60,7 @@ const SignedInLinks = (props)=>{
               </a>
               <div className="dropdown-menu" aria-labelledby="navbarDropdown">
                 <a className="dropdown-item" href="#" onClick={handleMystories}>My Stories</a>
-                <a className="dropdown-item" href="#" >Following</a>
+                <a className="dropdown-item" href="#" onClick={handleFollowing}>Following</a>
                 <a className="dropdown-item" href="#" onClick={handleBookmarks}>Bookmarks</a>
               </div>
             </li>]

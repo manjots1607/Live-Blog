@@ -32,8 +32,22 @@ router.get("/mystories",(req,res)=>{
     });
 });
 
+router.get("/following",(req,res)=>{
+  if(!req.user){
+    res.json({msg:"sign in required"});
+  }
+  console.log("following",req.user.following);
+  db.Blog.find({"author.id": {$in: req.user.following}})
+    .then(blogs=>{
+      res.json(blogs.reverse())
+    })
+    .catch(err=>{
+      console.log(err.message);
+      res.json({msg:"err.message"})
+    })
+})
+
 router.get("/bookmarks",(req,res)=>{
-  console.log("bookmark route");
   if(!req.user){
     res.json({msg:"sign in required"});
   }
@@ -45,7 +59,7 @@ router.get("/bookmarks",(req,res)=>{
     .catch(err=>{
       console.log(err.message);
       res.json({msg:"err.message"})
-    })
+    });
 });
 
 router.post('/search',(req,res)=>{
