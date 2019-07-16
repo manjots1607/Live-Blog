@@ -6,7 +6,7 @@ router.get("/",(req,res)=>{
     // code to display all blogs
     db.Blog.find()
     .then((blogs)=>{
-      
+
         res.json(blogs);
     })
     .catch((err)=>{
@@ -180,7 +180,7 @@ router.post("/:id/bookmark",(req,res)=>{
 router.post("/:id/comments",(req,res)=>{
   db.Blog.findById(req.params.id)
   .then(blog=>{
-   
+
     db.Comment.create(req.body.data)
     .then(comm=>{
       comm.author=req.user._id;
@@ -190,7 +190,7 @@ router.post("/:id/comments",(req,res)=>{
       comm.populate('author',(err,comment)=>{
         res.json(comment);
       })
-      
+
     })
     .catch(err=>{
       console.log(err);
@@ -199,6 +199,22 @@ router.post("/:id/comments",(req,res)=>{
   .catch(err=>{
     console.log(err);
   })
+})
+
+router.post("/:userId/follow",(req,res)=>{
+  if(!req.user){
+    res.json({msg:"please sign in"});
+  }
+  if(req.body.add){
+    req.user.following.push(req.params.userId);
+    req.user.save();
+    res.json({msg:"started following "+req.params.userId});
+  }else{
+    console.log("unfollow");
+    req.user.following.splice(req.user.following.indexOf(req.params.userId),1);
+    req.user.save();
+    res.json({msg:"unfollowed"});
+  }
 })
 
 
