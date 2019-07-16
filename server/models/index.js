@@ -13,3 +13,4 @@ mongoose.connect(databaseURL,{
 
 module.exports.Blog=require("./blog.js");
 module.exports.User=require("./user");
+module.exports.Comment=require("./comment");

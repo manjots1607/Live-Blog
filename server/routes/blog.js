@@ -6,6 +6,7 @@ router.get("/",(req,res)=>{
     // code to display all blogs
     db.Blog.find()
     .then((blogs)=>{
+      
         res.json(blogs);
     })
     .catch((err)=>{
@@ -69,10 +70,16 @@ router.get("/:id",(req,res)=>{
     let a={};
 
     db.Blog.findById(req.params.id)
+    .populate({
+      path : 'comments',
+      populate : {
+        path : 'author'
+      }
+    })
     .then((foundBlog)=>{
         a=JSON.parse(JSON.stringify(foundBlog));
         a.curUser=req.user;
-        console.log(foundBlog.likes);
+        console.log(foundBlog);
 
         res.json(a);
     }).catch((err)=>{
@@ -169,6 +176,29 @@ router.post("/:id/bookmark",(req,res)=>{
         }
       }
     })
+});
+router.post("/:id/comments",(req,res)=>{
+  db.Blog.findById(req.params.id)
+  .then(blog=>{
+   
+    db.Comment.create(req.body.data)
+    .then(comm=>{
+      comm.author=req.user._id;
+      comm.save();
+      blog.comments.push(comm);
+      blog.save();
+      comm.populate('author',(err,comment)=>{
+        res.json(comment);
+      })
+      
+    })
+    .catch(err=>{
+      console.log(err);
+    })
+  })
+  .catch(err=>{
+    console.log(err);
+  })
 })
 
 
