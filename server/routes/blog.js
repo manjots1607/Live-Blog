@@ -1,4 +1,5 @@
 const express= require('express');
+const mongoose = require("mongoose");
 const router=express.Router();
 const db=require("../models/index");
 
@@ -6,8 +7,8 @@ router.get("/",(req,res)=>{
     // code to display all blogs
     db.Blog.find()
     .then((blogs)=>{
-      
-        res.json(blogs);
+
+        res.json(blogs.reverse());
     })
     .catch((err)=>{
         console.log(err);
@@ -17,13 +18,57 @@ router.get("/",(req,res)=>{
     // res.json({msg:"here will be all list of blogs!!!"});
 });
 
+router.get("/mystories",(req,res)=>{
+  if(!req.user){
+    res.json({msg:"sign in required"});
+  }
+  db.Blog.find({"author.name":req.user.name})
+    .then(blogs=>{
+      res.send(blogs.reverse());
+    })
+    .catch(err=>{
+      console.log(err);
+      res.json({err:err.message});
+    });
+});
+
+router.get("/following",(req,res)=>{
+  if(!req.user){
+    res.json({msg:"sign in required"});
+  }
+  console.log("following",req.user.following);
+  db.Blog.find({"author.id": {$in: req.user.following}})
+    .then(blogs=>{
+      res.json(blogs.reverse())
+    })
+    .catch(err=>{
+      console.log(err.message);
+      res.json({msg:"err.message"})
+    })
+})
+
+router.get("/bookmarks",(req,res)=>{
+  if(!req.user){
+    res.json({msg:"sign in required"});
+  }
+  var obj_ids = req.user.bookmarks.map(function(id) { return mongoose.Types.ObjectId(id); });
+  db.Blog.find({_id: {$in: obj_ids}})
+    .then(blogs=>{
+      res.json(blogs.reverse())
+    })
+    .catch(err=>{
+      console.log(err.message);
+      res.json({msg:"err.message"})
+    });
+});
+
 router.post('/search',(req,res)=>{
   var title = req.body.titleSearch;
   const regex = new RegExp(escapeRegex(title), 'gi');
         db.Blog.find({title: regex})
            .then(blogs=>{
              console.log(blogs);
-             res.json(blogs);
+             res.json(blogs.reverse());
            })
            .catch((err)=>{
                console.log(err);
@@ -36,7 +81,7 @@ router.post('/search/genre',(req,res)=>{
         db.Blog.find({genre})
            .then(blogs=>{
              console.log(blogs);
-             res.json(blogs);
+             res.json(blogs.reverse());
            })
            .catch((err)=>{
                console.log(err);
@@ -51,6 +96,7 @@ router.post("/",(req,res)=>{
    var author = {
        id:req.user._id,
        username:req.user.username,
+       name:req.user.name,
        authorURL:req.user.authorURL
    };
    console.log(author);
@@ -180,7 +226,7 @@ router.post("/:id/bookmark",(req,res)=>{
 router.post("/:id/comments",(req,res)=>{
   db.Blog.findById(req.params.id)
   .then(blog=>{
-   
+
     db.Comment.create(req.body.data)
     .then(comm=>{
       comm.author=req.user._id;
@@ -190,7 +236,7 @@ router.post("/:id/comments",(req,res)=>{
       comm.populate('author',(err,comment)=>{
         res.json(comment);
       })
-      
+
     })
     .catch(err=>{
       console.log(err);
@@ -199,6 +245,22 @@ router.post("/:id/comments",(req,res)=>{
   .catch(err=>{
     console.log(err);
   })
+})
+
+router.post("/:userId/follow",(req,res)=>{
+  if(!req.user){
+    res.json({msg:"please sign in"});
+  }
+  if(req.body.add){
+    req.user.following.push(req.params.userId);
+    req.user.save();
+    res.json({msg:"started following "+req.params.userId});
+  }else{
+    console.log("unfollow");
+    req.user.following.splice(req.user.following.indexOf(req.params.userId),1);
+    req.user.save();
+    res.json({msg:"unfollowed"});
+  }
 })
 
 

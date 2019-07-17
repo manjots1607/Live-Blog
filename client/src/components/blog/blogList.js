@@ -5,7 +5,12 @@ const BlogList = (props)=>{
   let projects = <img src="https://cdn.dribbble.com/users/308895/screenshots/2598725/no-results.gif" style={{margin:'0 auto',height:'90vh'}}/>;
   console.log(props);
   if(props.blogs && props.blogs.length>0){
-    projects = props.blogs.map((b)=>(
+    projects = props.blogs.filter(e=>{
+      if(e){
+        return true;
+      }
+      return false;
+    }).map((b)=>(
       <React.Fragment key={b._id} >
       {/* <div className="container col-sm-12 col-md-5 mt-4 mb-4 " style={{boxShadow:'0px 0px 10px 4px #aaa'}}>
         <div className="row">
@@ -34,7 +39,7 @@ const BlogList = (props)=>{
 
               <img src={b.author.authorURL} style={{borderRadius:'50%',width:'80px',float:'left'}} />
 
-              <span className="float-right mt-5 authCardTxt" >By :<span className="text-primary">{b.author.username}</span></span>
+              <span className="float-right mt-5 authCardTxt" >By :<span className="text-primary">{b.author.name}</span></span>
               <span className="float-right authCardTxt" >{b.created_date}</span>
 
           </div>

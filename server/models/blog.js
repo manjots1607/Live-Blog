@@ -13,6 +13,7 @@ var blogSchema=new mongoose.Schema({
             rel:User
     },
         username:String,
+        name:String,
         authorURL:String
     },
     imageURL:{

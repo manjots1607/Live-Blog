@@ -9,6 +9,7 @@ class DisplayBlog extends Component{
     this.state = {
       title:'',
       authorURL:'',
+      authorId:'',
       username:'',
       imageURL:'',
       content:'',
@@ -19,11 +20,13 @@ class DisplayBlog extends Component{
       liked:false,
       likesCount:0,
       bookmark:false,
+      following:false,
       comments:[]
     };
     this.socket = openSocket('http://localhost:5000');
     this.handleEdit = this.handleEdit.bind(this);
     this.handleLike = this.handleLike.bind(this);
+    this.handleFollow = this.handleFollow.bind(this);
     this.handleBookmark = this.handleBookmark.bind(this);
     this.delHandler = this.delHandler.bind(this);
   }
@@ -47,6 +50,13 @@ class DisplayBlog extends Component{
     this.setState({liked,likesCount});
   }
 
+  handleFollow = function(){
+    axios.post(`http://localhost:5000/blog-api/${this.state.authorId}/follow`,{add:!this.state.following});
+    var following = this.state.following;
+    following = !following;
+    this.setState({following});
+  }
+
   delHandler=()=>{
     axios.delete(`http://localhost:5000/blog-api/${this.props.match.params.blogId}`)
     .then(res=>{
@@ -62,18 +72,21 @@ class DisplayBlog extends Component{
     const displayBlog = this;
     axios.get(`http://localhost:5000/blog-api/${this.props.match.params.blogId}`)
       .then(res=>{
-        console.log(res.data.bookmarks);
+        console.log(res.data);
         const {title,imageURL,content} = res.data
-        const {authorURL,username} = res.data.author;
+        const {authorURL} = res.data.author;
+        const username = res.data.author.name;
+        const authorId = res.data.author.id;
         const blogId = res.data._id;
         const liked = res.data.likes.includes(res.data.curUser._id);
+        const following = res.data.curUser.following.includes(res.data.author.id);
         const likesCount = res.data.likes.length;
         const bookmark = res.data.bookmarks.includes(res.data.curUser._id);
         const isLive=res.data.isLive;
         const isAuthorised = res.data.curUser?res.data.author.id===res.data.curUser._id:false;
-        
+
         const comments=res.data.comments;
-        this.setState({title,authorURL,imageURL,content,username,blogId,isLive,isAuthorised,liked,likesCount,bookmark,comments});
+        this.setState({title,authorURL,imageURL,content,username,blogId,isLive,isAuthorised,liked,likesCount,bookmark,comments,authorId,following});
       })
       .catch(err=>{
         console.log(this.props.match.params.blogId);
@@ -163,7 +176,7 @@ class DisplayBlog extends Component{
         return <p className="text-left updateParagraph" style={{fontSize:'1.3em'}}><span>{list[0]}</span><span style={liveCursorStyle}>|</span><span style={authorStyle} >Updating</span><span>{list[1]}</span></p>
       }
     });
-    return title ===""?<p>Some fancy annimation</p>:(
+    return title ===""?<img src="https://loading.io/spinners/typing/lg.-text-entering-comment-loader.gif"/>:(
       <div className="container mt-5">
       <p id="updating" style={{position:'fixed',top:'60px',zIndex:'10',fontWeight:'bold',color:'blue',fontSize:'1.2em',width:'80vw'}} className="align-center"></p>
         <div className="row mb-5">
@@ -172,7 +185,7 @@ class DisplayBlog extends Component{
             <div>
               <img src={authorURL} style={{borderRadius:'50%',width:'80px'}} className="float-left"/>
               <span className="float-left text-primary ml-4" style={{fontSize:'1.3em',position:'relative',top:'20px'}}>{username}</span>
-              {!(this.state.isAuthorised)?<button className="btn-sm btn btn-outline-secondary float-left ml-2" style={{position:'relative',top:'20px'}}>Follow</button>:null}
+              {!(this.state.isAuthorised)?<button onClick={this.handleFollow} className={this.state.following?"btn-sm btn btn-secondary float-left ml-2":"btn-sm btn btn-outline-secondary float-left ml-2"} style={{position:'relative',top:'20px'}}>{this.state.following?"Following":"Follow"}</button>:null}
               {this.state.isAuthorised?<button className="btn-sm btn btn-outline-danger float-left ml-2" onClick={this.delHandler} style={{position:'relative',top:'20px'}}>Delete</button>:null}
               {this.state.isAuthorised?<button className="btn-sm btn btn-outline-primary float-left ml-2" onClick={this.handleEdit} style={{position:'relative',top:'20px'}}>Edit</button>:null}
             </div>
@@ -192,7 +205,7 @@ class DisplayBlog extends Component{
         <span className="text-primary">{this.state.likesCount} </span>Like{this.state.likesCount>1?"s":null}{this.state.liked?<i className="fa fa-heart text-danger" aria-hidden="true" onClick={this.handleLike}></i>:<i className="fa fa-heart-o text-danger" aria-hidden="true" onClick={this.handleLike}></i>}
         <span className="ml-5 mr-5">{this.state.bookmark?<i class="fa fa-bookmark" aria-hidden="true" onClick={this.handleBookmark}> Bookmarked</i>:<i class="fa fa-bookmark-o" aria-hidden="true" onClick={this.handleBookmark}> Bookmark</i>}</span>
         </div>
-        <Comments authorURL={authorURL} comments={this.state.comments}/> 
+        <Comments authorURL={authorURL} comments={this.state.comments}/>
       </div>
     );
   }

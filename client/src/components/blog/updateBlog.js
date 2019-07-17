@@ -153,7 +153,7 @@ class UpdateBlog extends Component{
       fontSize:'1.2em'
     }
 
-    return title ===""?<p>Some fancy annimation</p>:(
+    return title ===""?<img src="https://loading.io/spinners/typing/lg.-text-entering-comment-loader.gif"/>:(
       <div className="container mt-5">
         <p id="updating" style={{position:'fixed',top:'60px',zIndex:'10',fontWeight:'bold',color:'while',fontSize:'1.2em',width:'80vw'}} className="align-center"></p>
         <div className="row mb-5">
@@ -162,7 +162,6 @@ class UpdateBlog extends Component{
             <div>
               <img src={authorURL} style={{borderRadius:'50%',width:'80px'}} className="float-left"/>
               <span className="float-left text-primary ml-4" style={{fontSize:'1.3em',position:'relative',top:'20px'}}>{username}</span>
-              <button className="btn-sm btn btn-outline-secondary float-left ml-5" style={{position:'relative',top:'20px'}}>Follow</button>
             </div>
           </div>
           <div className="col-md-6 sm-12">

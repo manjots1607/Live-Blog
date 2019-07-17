@@ -34,7 +34,7 @@ class Signin extends Component{
         this.setState({err:"Invalid Username or Password"});
       }
     }).catch(err=>{
-      this.setState({err:"Invalid Username or Password"});
+      this.setState({err:err.message});
     });
 
   }

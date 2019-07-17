@@ -8,7 +8,9 @@ const          express = require('express'),
             bodyParser = require("body-parser"),
                   cors = require("cors"),
                 socket = require('socket.io'),
-                   app = express();
+                   app = express()
+                multer = require("multer"),
+                path   = require("path");
 
 
 //Express session
@@ -56,12 +58,36 @@ app.use("/blog-api/",BlogRoutes);
 app.get("/api/curUser",(req,res)=>{
   res.json(req.user);
 });
+
+//Muler upload
+
+const storage = multer.diskStorage({
+   filename: function(req, file, cb){
+      cb(null,"IMAGE-" + Date.now() + path.extname(file.originalname));
+   }
+});
+const upload = multer({
+   storage: storage,
+   limits:{fileSize: 1000000},
+}).single("image");
+
 //auth routes
-app.post("/api/register",(req,res)=>{
-  db.User.register(new db.User({username:req.body.username}),req.body.password,(err,user)=>{
+
+var cloudinary = require('cloudinary');
+cloudinary.config({
+  cloud_name: 'bharatnischal',
+  api_key: "api_key",
+  api_secret: "api_secret"
+});
+
+
+app.post("/api/register",upload,(req,res)=>{
+  console.log("file recieved",req.file,"body",req.body);
+  cloudinary.uploader.upload(req.file.path, (result)=> {
+  db.User.register(new db.User({username:req.body.username,name:req.body.name,authorURL:result.secure_url}),req.body.password,(err,user)=>{
       if(err){
           console.log(err);
-          res.json(err);
+          res.json({err:err.message,success:"false"});
       }
       passport.authenticate("local")(req,res,()=>{
           res.json({
@@ -70,6 +96,7 @@ app.post("/api/register",(req,res)=>{
           });
       });
   });
+});
 });
 
 app.get("/api/logout",(req,res)=>{
@@ -102,7 +129,7 @@ io.on('connection', (socket) => {
 
 
     console.log('made socket connection', socket.request.headers.referer);
-    
+
     var chkurl=socket.request.headers.referer.split("/");
     chkurl.splice(chkurl.length-2,1);
     chkurl=chkurl.join("/");
