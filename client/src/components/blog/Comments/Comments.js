@@ -12,9 +12,9 @@ class Comments extends Component {
         this.setState({allComments:this.props.comments});
     }
     commentChangeHandler=(e)=>{
-        
+
         this.setState({[e.target.name]:e.target.value});
-        
+
     }
     submitHandler=(e)=>{
         e.preventDefault();
@@ -22,15 +22,15 @@ class Comments extends Component {
         console.log(data);
         axios.post(`http://localhost:5000/blog-api/${this.props.match.params.blogId}/comments`,{data})
         .then(res=>{
-                
+
                 const allC=[...this.state.allComments];
                 allC.push(res.data);
                 this.setState({allComments:allC,comment:""});
-                
+
         }).catch(err=>{
             console.log(err);
         });
-        
+
     }
 
     render() {
@@ -67,10 +67,10 @@ class Comments extends Component {
                 <div className="col-0 col-md-1"></div>
                 <div className="col-12 col-md-10">
                     {this.state.allComments.map(c=>(
-                        <Comment authorURL={this.props.authorURL} key={c._id} content={c.content} author={c.author.username} />
+                        <Comment authorURL={this.props.authorURL} key={c._id} content={c.content} author={c.author.name} />
                     ))}
-                    
-                    
+
+
                 </div>
                 <div className="col-0 col-md-1"></div>
             </div>
