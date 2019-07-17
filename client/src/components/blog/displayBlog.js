@@ -23,11 +23,10 @@ class DisplayBlog extends Component{
       following:false,
       comments:[]
     };
-    if(process.env.PORT){
-        this.socket = openSocket(window.location.hostname);
-    }else{
-      this.socket = openSocket('http://localhost:5000');
-    }
+    
+    this.socket = openSocket(window.location.hostname);
+    
+    
     this.handleEdit = this.handleEdit.bind(this);
     this.handleLike = this.handleLike.bind(this);
     this.handleFollow = this.handleFollow.bind(this);

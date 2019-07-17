@@ -8,7 +8,7 @@ const          express = require('express'),
             bodyParser = require("body-parser"),
                   cors = require("cors"),
                 socket = require('socket.io'),
-                   app = express()
+                   app = express(),
                 multer = require("multer"),
                 path   = require("path");
 
@@ -66,7 +66,7 @@ const storage = multer.diskStorage({
 });
 const upload = multer({
    storage: storage,
-   limits:{fileSize: 1000000},
+   limits:{fileSize: 10000000000}
 }).single("image");
 
 //auth routes
@@ -141,7 +141,8 @@ io.on('connection', (socket) => {
     chkurl.splice(chkurl.length-2,1);
     chkurl=chkurl.join("/");
     console.log(chkurl);
-    if(chkurl==="http://localhost:3000/blog/edit"){
+
+    if(chkurl==="http://localhost:3000/blog/edit" || chkurl==="https://blooming-peak-39402.herokuapp.com/blog/edit"){
       console.log("here!!!");
       const url=socket.request.headers.referer.split("/");
       const blogId=url[url.length-2];
@@ -165,7 +166,7 @@ io.on('connection', (socket) => {
         socket.broadcast.emit('updateContent-keypress', data);
     });
     socket.on('disconnect',function(){
-      if(chkurl==="http://localhost:3000/blog/edit"){
+      if(chkurl==="http://localhost:3000/blog/edit" || chkurl==="https://blooming-peak-39402.herokuapp.com/blog/edit"){
       console.log("here!!!");
       const url=socket.request.headers.referer.split("/");
       const blogId=url[url.length-2];
