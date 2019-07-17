@@ -1,10 +1,11 @@
 import React, {Component} from 'react';
 import axios from 'axios';
 import openSocket from 'socket.io-client';
+var socket;
 if(process.env.PORT){
-  const  socket = openSocket(window.location.hostname);
+  socket = openSocket(window.location.hostname);
 }else{
-  const  socket = openSocket('http://localhost:5000');
+  socket = openSocket('http://localhost:5000');
 }
 
 
