@@ -1,7 +1,12 @@
 import React, {Component} from 'react';
 import axios from 'axios';
 import openSocket from 'socket.io-client';
-const  socket = openSocket('http://localhost:5000');
+if(process.env.PORT){
+  const  socket = openSocket(window.location.hostname);
+}else{
+  const  socket = openSocket('http://localhost:5000');
+}
+
 
 
 class UpdateBlog extends Component{

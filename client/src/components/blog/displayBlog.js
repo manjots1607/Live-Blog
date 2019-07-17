@@ -23,7 +23,11 @@ class DisplayBlog extends Component{
       following:false,
       comments:[]
     };
-    this.socket = openSocket('http://localhost:5000');
+    if(process.env.PORT){
+        this.socket = openSocket(window.location.hostname);
+    }else{
+      this.socket = openSocket('http://localhost:5000');
+    }
     this.handleEdit = this.handleEdit.bind(this);
     this.handleLike = this.handleLike.bind(this);
     this.handleFollow = this.handleFollow.bind(this);
@@ -176,7 +180,7 @@ class DisplayBlog extends Component{
         return <p className="text-left updateParagraph" style={{fontSize:'1.3em'}}><span>{list[0]}</span><span style={liveCursorStyle}>|</span><span style={authorStyle} >Updating</span><span>{list[1]}</span></p>
       }
     });
-    return title ===""?<img src="https://loading.io/spinners/typing/lg.-text-entering-comment-loader.gif"/>:(
+    return title ===""?<div className="container mt-5"><img src="https://loading.io/spinners/typing/lg.-text-entering-comment-loader.gif" className="img-responsive"/></div>:(
       <div className="container mt-5">
       <p id="updating" style={{position:'fixed',top:'60px',zIndex:'10',fontWeight:'bold',color:'blue',fontSize:'1.2em',width:'80vw'}} className="align-center"></p>
         <div className="row mb-5">
