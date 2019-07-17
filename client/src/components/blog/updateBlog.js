@@ -153,7 +153,7 @@ class UpdateBlog extends Component{
       fontSize:'1.2em'
     }
 
-    return title ===""?<p>Some fancy annimation</p>:(
+    return title ===""?<img src="https://loading.io/spinners/typing/lg.-text-entering-comment-loader.gif"/>:(
       <div className="container mt-5">
         <p id="updating" style={{position:'fixed',top:'60px',zIndex:'10',fontWeight:'bold',color:'while',fontSize:'1.2em',width:'80vw'}} className="align-center"></p>
         <div className="row mb-5">

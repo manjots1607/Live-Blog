@@ -61,7 +61,7 @@ app.post("/api/register",(req,res)=>{
   db.User.register(new db.User({username:req.body.username,name:req.body.name}),req.body.password,(err,user)=>{
       if(err){
           console.log(err);
-          res.json(err);
+          res.json({err:err.message,success:"false"});
       }
       passport.authenticate("local")(req,res,()=>{
           res.json({

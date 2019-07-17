@@ -74,7 +74,8 @@ class DisplayBlog extends Component{
       .then(res=>{
         console.log(res.data);
         const {title,imageURL,content} = res.data
-        const {authorURL,username} = res.data.author;
+        const {authorURL} = res.data.author;
+        const username = res.data.author.name;
         const authorId = res.data.author.id;
         const blogId = res.data._id;
         const liked = res.data.likes.includes(res.data.curUser._id);
@@ -175,7 +176,7 @@ class DisplayBlog extends Component{
         return <p className="text-left updateParagraph" style={{fontSize:'1.3em'}}><span>{list[0]}</span><span style={liveCursorStyle}>|</span><span style={authorStyle} >Updating</span><span>{list[1]}</span></p>
       }
     });
-    return title ===""?<p>Some fancy annimation</p>:(
+    return title ===""?<img src="https://loading.io/spinners/typing/lg.-text-entering-comment-loader.gif"/>:(
       <div className="container mt-5">
       <p id="updating" style={{position:'fixed',top:'60px',zIndex:'10',fontWeight:'bold',color:'blue',fontSize:'1.2em',width:'80vw'}} className="align-center"></p>
         <div className="row mb-5">

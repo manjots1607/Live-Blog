@@ -8,7 +8,8 @@ class Signup extends Component {
     this.state = {
       username: "",
       email: "",
-      password: ""
+      password: "",
+      err:""
     };
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleChange = this.handleChange.bind(this);
@@ -30,11 +31,10 @@ class Signup extends Component {
           this.props.history.push("/");
         }
         else {
-          alert("there is some problem ");
+          this.setState({err:res.data.err});
         }
       }).catch(err => {
-        console.log(err);
-        alert(err);
+        this.setState({err:err.message});
       });
   }
 
@@ -95,6 +95,7 @@ class Signup extends Component {
                       <input className="form-control" type="password" name="password" id="password" value={this.state.password} onChange={this.handleChange} style={formInputStyle} />
                     </div>
                   </div>
+                  {this.state.err===""?null:<div className="text-danger">{this.state.err}</div>}
                   <div className="form-group row">
                     <div className="col-sm-3 col-md-6"></div>
                     <div className="col-sm-9 col-md-6 text-right"><span className="text-info">Forgot your password?</span></div>

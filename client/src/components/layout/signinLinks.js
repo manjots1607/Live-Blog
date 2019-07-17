@@ -39,7 +39,7 @@ const SignedInLinks = (props)=>{
 
     const handleSignOut = (e)=>{
         //e.preventDefault();
-        Axios.get("/api/logout")
+        Axios.get("http://localhost:5000/api/logout")
         .then(res=>{
             if(res.data.msg){
                 props.logout(undefined);

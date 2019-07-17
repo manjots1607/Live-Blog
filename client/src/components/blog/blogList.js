@@ -39,7 +39,7 @@ const BlogList = (props)=>{
 
               <img src={b.author.authorURL} style={{borderRadius:'50%',width:'80px',float:'left'}} />
 
-              <span className="float-right mt-5 authCardTxt" >By :<span className="text-primary">{b.author.username}</span></span>
+              <span className="float-right mt-5 authCardTxt" >By :<span className="text-primary">{b.author.name}</span></span>
               <span className="float-right authCardTxt" >{b.created_date}</span>
 
           </div>

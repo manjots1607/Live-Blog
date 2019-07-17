@@ -22,7 +22,7 @@ router.get("/mystories",(req,res)=>{
   if(!req.user){
     res.json({msg:"sign in required"});
   }
-  db.Blog.find({"author.username":req.user.name})
+  db.Blog.find({"author.name":req.user.name})
     .then(blogs=>{
       res.send(blogs.reverse());
     })
@@ -95,7 +95,8 @@ router.post("/",(req,res)=>{
    console.log("data reached is ",formData.data);
    var author = {
        id:req.user._id,
-       username:req.user.name,
+       username:req.user.username,
+       name:req.user.name,
        authorURL:req.user.authorURL
    };
    console.log(author);
