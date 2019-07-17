@@ -67,7 +67,7 @@ class Comments extends Component {
                 <div className="col-0 col-md-1"></div>
                 <div className="col-12 col-md-10">
                     {this.state.allComments.map(c=>(
-                        <Comment authorURL={this.props.authorURL} key={c._id} content={c.content} author={c.author.name} />
+                        <Comment authorURL={c.author.authorURL} key={c._id} content={c.content} author={c.author.name} />
                     ))}
 
 
