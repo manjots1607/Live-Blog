@@ -53,7 +53,9 @@ class App extends  Component{
             <Route exact path="/signup"
               render={(props) => <Signup {...props} isLogin={this.state.user} login={this.loginHandler} />}
             />
-            <Route exact path="/blog/:blogId" component={DisplayBlog}/>
+            <Route exact path="/blog/:blogId" 
+              render={(props) => <DisplayBlog {...props} curUser={this.state.user}  />}
+            />
             <Route exact path="/blog/:blogId/edit"  
               render={(props) => <UpdateBlog {...props} isLogin={this.state.user} />}
             />

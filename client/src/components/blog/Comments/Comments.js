@@ -53,15 +53,18 @@ class Comments extends Component {
                 </div>
                 <div className="col-0 col-md-1"></div>
                 <div className="col-12 col-md-10">
-                    <form className="row mb-4" onSubmit={this.submitHandler}>
-                        <div className="col-8 col-md-8">
-                            <input type="text" name="comment" placeholder="Ener your Comment here!!" className="p-2" style={comStyle} onChange={this.commentChangeHandler} value={this.state.comment} />
-                        </div>
-                        <div className="col-4 col-md-2">
+                    {this.props.curUser?(
+                        <form className="row mb-4" onSubmit={this.submitHandler}>
+                            <div className="col-8 col-md-8">
+                                <input type="text" name="comment" placeholder="Enter your Comment here!!" className="p-2" style={comStyle} onChange={this.commentChangeHandler} value={this.state.comment} />
+                            </div>
+                            <div className="col-4 col-md-2">
 
-                            <button className="btn btn-outline-success" style={{width:'100%'}}>Submit</button>
-                        </div>
-                    </form>
+                                <button className="btn btn-outline-success" style={{width:'100%'}}>Submit</button>
+                            </div>
+                        </form>
+                    ):null
+                    }
                 </div>
                 <div className="col-0 col-md-1"></div>
                 <div className="col-0 col-md-1"></div>
