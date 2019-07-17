@@ -9,22 +9,30 @@ class Signup extends Component {
       username: "",
       email: "",
       password: "",
+      image:null,
       err:""
     };
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleChange = this.handleChange.bind(this);
+    this.handleChangeImage = this.handleChangeImage.bind(this);
   }
 
 
   handleSubmit(e) {
+    console.log(this.state);
     e.preventDefault();
+        const config = {
+            headers: {
+                'enctype': 'multipart/form-data'
+            }
+        };
+    const formData = new FormData();
+      formData.append('image',this.state.image);
+      formData.append('username',this.state.email);
+      formData.append('password',this.state.password);
+      formData.append('name',this.state.username);
 
-    Axios.post("http://localhost:5000/api/register",
-      {
-        username: this.state.email,
-        password: this.state.password,
-        name:this.state.username
-      })
+    Axios.post("http://localhost:5000/api/register",formData)
       .then(res => {
         if (res.data.success === "true") {
           this.props.login(res.data.user);
@@ -37,6 +45,11 @@ class Signup extends Component {
         this.setState({err:err.message});
       });
   }
+
+  handleChangeImage(e) {
+        console.log(e.target.files[0]);
+        this.setState({image:e.target.files[0]});
+    }
 
   handleChange(e) {
     this.setState({ [e.target.name]: e.target.value });
@@ -78,28 +91,31 @@ class Signup extends Component {
                   <div className="form-group row">
                     <label for="username" className="col-sm-3 col-form-label" style={labelStyle}>Name <i className="fa fa-user" aria-hidden="true"></i></label>
                     <div className="col-sm-9">
-                      <input className="form-control" type="text" name="username" id="username" value={this.state.username} onChange={this.handleChange} style={formInputStyle} />
+                      <input className="form-control" type="text" name="username" id="username" value={this.state.username} onChange={this.handleChange} style={formInputStyle} required/>
                     </div>
                   </div>
 
                   <div className="form-group row">
                     <label for="email" className="col-sm-3 col-form-label" style={labelStyle}>Email <i class="fa fa-envelope" aria-hidden="true"></i></label>
                     <div className="col-sm-9">
-                      <input className="form-control" type="email" name="email" id="email" value={this.state.email} onChange={this.handleChange} style={formInputStyle} />
+                      <input className="form-control" type="email" name="email" id="email" value={this.state.email} onChange={this.handleChange} style={formInputStyle} required/>
                     </div>
                   </div>
 
                   <div className="form-group row">
                     <label for="password" class="col-sm-3 col-form-label" style={labelStyle}>Password <i class="fa fa-lock" aria-hidden="true"></i></label>
                     <div className="col-sm-9">
-                      <input className="form-control" type="password" name="password" id="password" value={this.state.password} onChange={this.handleChange} style={formInputStyle} />
+                      <input className="form-control" type="password" name="password" id="password" value={this.state.password} onChange={this.handleChange} style={formInputStyle} required/>
+                    </div>
+                  </div>
+                  <div class="form-group row">
+                    <label htmlFor="image" class="col-sm-4 col-form-label" style={labelStyle}>Profile image</label>
+                    <div className="col-sm-8">
+                      <input type="file" class="form-control-file" id="image" name="image" onChange={this.handleChangeImage}/>
                     </div>
                   </div>
                   {this.state.err===""?null:<div className="text-danger">{this.state.err}</div>}
-                  <div className="form-group row">
-                    <div className="col-sm-3 col-md-6"></div>
-                    <div className="col-sm-9 col-md-6 text-right"><span className="text-info">Forgot your password?</span></div>
-                  </div>
+
                   <button className="btn btn-lg text-white shadow" style={{ backgroundColor: '#1BA94C', float: 'right' }}>Sign Up</button>
                   <br />
                   <br />
