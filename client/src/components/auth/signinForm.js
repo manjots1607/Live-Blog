@@ -19,7 +19,7 @@ class Signin extends Component{
   handleSubmit(e){
     e.preventDefault();
 
-    Axios.post("http://localhost:5000/api/login",
+    Axios.post("/api/login",
           {username:this.state.email,
            password:this.state.password
           })

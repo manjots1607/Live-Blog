@@ -18,7 +18,7 @@ class App extends  Component{
     user:undefined
   }
   componentDidMount(){
-    Axios.get("http://localhost:5000/api/curUser")
+    Axios.get("/api/curUser")
     .then(res=>{
       console.log(res);
       if(!(res.data==="")){

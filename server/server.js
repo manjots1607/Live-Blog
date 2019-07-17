@@ -51,9 +51,7 @@ app.use((req,res,next)=>{
   next();
 });
 
-app.get("/",(req,res)=>{
-    res.json({msg:"HelloWorld!!! from app.js"});
-});
+
 app.use("/blog-api/",BlogRoutes);
 app.get("/api/curUser",(req,res)=>{
   res.json(req.user);
@@ -117,6 +115,15 @@ app.post("/api/login",passport.authenticate("local",{
 app.get("/api/err",(req,res)=>{
   res.json({success:"false"});
 });
+
+if (process.env.NODE_ENV === 'production') {
+  // Set static folder
+  app.use(express.static(__dirname+'/../client/build'));
+
+  app.get('*', (req, res) => {
+    res.sendFile(path.resolve(__dirname, '..' , 'client', 'build', 'index.html'));
+  });
+}
 
 
 const port=process.env.PORT || 5000;

@@ -32,7 +32,7 @@ class Signup extends Component {
       formData.append('password',this.state.password);
       formData.append('name',this.state.username);
 
-    Axios.post("http://localhost:5000/api/register",formData)
+    Axios.post("/api/register",formData)
       .then(res => {
         if (res.data.success === "true") {
           this.props.login(res.data.user);

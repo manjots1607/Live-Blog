@@ -20,7 +20,7 @@ class UpdateBlog extends Component{
 
   componentDidMount()
   {
-    axios.get(`http://localhost:5000/blog-api/${this.props.match.params.blogId}`)
+    axios.get(`/blog-api/${this.props.match.params.blogId}`)
     .then(res=>{
       const {title,imageURL,content} = res.data
       const {authorURL,username} = res.data.author;
@@ -60,7 +60,7 @@ class UpdateBlog extends Component{
 
         console.log("keypress");
 
-        axios.put(`http://localhost:5000/blog-api/${this.state.blogId}`,{title:this.state.title,content:this.state.content,imageURL:this.state.imageURL})
+        axios.put(`/blog-api/${this.state.blogId}`,{title:this.state.title,content:this.state.content,imageURL:this.state.imageURL})
           .then(res=>{
             const updating = document.getElementById('updating');
             updating.innerText = "Saving...";
@@ -95,7 +95,7 @@ class UpdateBlog extends Component{
       else if(x==8){  //backspace
         console.log("keyup");
 
-        axios.put(`http://localhost:5000/blog-api/${this.state.blogId}`,{title:this.state.title,content:this.state.content,imageURL:this.state.imageURL})
+        axios.put(`/blog-api/${this.state.blogId}`,{title:this.state.title,content:this.state.content,imageURL:this.state.imageURL})
           .then(res=>{
 
             const updating = document.getElementById('updating');
@@ -120,7 +120,7 @@ class UpdateBlog extends Component{
       }else if(x==32){  //space
         console.log("keyup");
 
-        axios.put(`http://localhost:5000/blog-api/${this.state.blogId}`,{title:this.state.title,content:this.state.content,imageURL:this.state.imageURL})
+        axios.put(`/blog-api/${this.state.blogId}`,{title:this.state.title,content:this.state.content,imageURL:this.state.imageURL})
           .then(res=>{
             const updating = document.getElementById('updating');
             updating.innerText = "Saving...";

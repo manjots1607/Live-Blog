@@ -20,7 +20,7 @@ class Comments extends Component {
         e.preventDefault();
         const data={content:this.state.comment};
         console.log(data);
-        axios.post(`http://localhost:5000/blog-api/${this.props.match.params.blogId}/comments`,{data})
+        axios.post(`/blog-api/${this.props.match.params.blogId}/comments`,{data})
         .then(res=>{
 
                 const allC=[...this.state.allComments];
