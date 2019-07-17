@@ -2,7 +2,7 @@ const mongoose=require("mongoose");
 mongoose.set("debug",true);
 mongoose.Promise=Promise;
 
-const databaseURL="mongodb://localhost/liveBlog";
+const databaseURL=process.env.DATABASEURL||"mongodb://localhost/liveBlog";
 
 mongoose.connect(databaseURL,{
     useNewUrlParser:true
