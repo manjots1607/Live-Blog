@@ -2,7 +2,6 @@ import React, {Component} from 'react';
 import axios from 'axios';
 import openSocket from 'socket.io-client';
 
-const socket = openSocket(window.location.hostname);
 
 
 
@@ -19,6 +18,7 @@ class UpdateBlog extends Component{
     this.handleChange = this.handleChange.bind(this);
     this.handleKeyPress = this.handleKeyPress.bind(this);
     this.handleKeyUp = this.handleKeyUp.bind(this);
+    this.socket= openSocket(window.location.hostname);
   }
 
   componentDidMount()
@@ -48,7 +48,7 @@ class UpdateBlog extends Component{
   }
 
   componentWillUnmount(){
-    socket.disconnect();
+    this.socket.disconnect();
   }
   handleChange(e){
     this.setState({[e.target.name]:e.target.value});
@@ -75,7 +75,7 @@ class UpdateBlog extends Component{
             alert(err.message);
           });
         setTimeout(()=>{
-          socket.emit('updateContent-keypress',{
+          this.socket.emit('updateContent-keypress',{
             a:startPosition,
             b:endPosition,
             x:x,
@@ -112,7 +112,7 @@ class UpdateBlog extends Component{
           });
 
           setTimeout(()=>{
-            socket.emit('updateContent-keyup',{
+            this.socket.emit('updateContent-keyup',{
               a:startPosition,
               b:endPosition,
               x:x,
@@ -136,7 +136,7 @@ class UpdateBlog extends Component{
           });
 
           setTimeout(()=>{
-            socket.emit('updateContent-keyup',{
+            this.socket.emit('updateContent-keyup',{
               a:startPosition,
               b:endPosition,
               x:x,
