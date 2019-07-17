@@ -37,7 +37,7 @@ class App extends  Component{
   }
   render(){
 
-    Axios.defaults.withCredentials = true
+    Axios.defaults.withCredentials = true;
     return (
       <BrowserRouter>
         <div className="App">
