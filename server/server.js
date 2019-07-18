@@ -147,16 +147,16 @@ io.on('connection', (socket) => {
       });
     }
     // Handle chat event
-    socket.on('updateContent-keyup', function(data){
+    socket.on('update_blog', function(data){
         console.log('socket data',data);
-        socket.broadcast.emit('updateContent-keyup', data);
+        db.Blog.findById(data.blogId)
+          .then(blog=>{
+            blog.content = data.content;
+            blog.save();
+            socket.broadcast.emit('updateContent', data);
+          })
     });
 
-    // Handle typing event
-    socket.on('updateContent-keypress', function(data){
-        console.log('socket data',data);
-        socket.broadcast.emit('updateContent-keypress', data);
-    });
     socket.on('disconnect',function(){
       if(chkurl==="http://localhost:3000/blog/edit"){
       console.log("here!!!");

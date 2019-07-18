@@ -93,47 +93,14 @@ class DisplayBlog extends Component{
         console.log(err);
       });
 
-      this.socket.on('updateContent-keypress',function (data) {
+      this.socket.on('updateContent',function (data) {
         const updating = document.getElementById('updating');
         updating.innerText = "Updating...";
         setTimeout(()=>{
           updating.innerText = "";
         },1000)
         if(data.blogId ===displayBlog.state.blogId){
-            if(data.x===13){
-              data.x=10;
-            }
-            const par = displayBlog.state.content===''?'': displayBlog.state.content.substring(0,data.a)+String.fromCharCode(data.x) + displayBlog.state.content.substring(data.b);
-            displayBlog.setState({content:par,cursor:data.a+1});
-        }
-      });
-
-      this.socket.on('updateContent-keyup',function (data) {
-        const updating = document.getElementById('updating');
-        updating.innerText = "Updating...";
-        setTimeout(()=>{
-          updating.innerText = "";
-        },1000)
-        if(data.blogId ===displayBlog.state.blogId){
-         if(data.a===data.b){
-            if(data.x==8){
-              const par = displayBlog.state.content.substring(0,data.a) + displayBlog.state.content.substring(data.b+1);
-              displayBlog.setState({content:par,cursor:data.a});
-            }else if(data.x==32){
-              const par = displayBlog.state.content.substring(0,data.a-1) +" " + displayBlog.state.content.substring(data.a-1);
-              displayBlog.setState({content:par,cursor:data.a+1});
-            }
-          }else{  //Selected more than 1 character
-            if(data.x==8){
-              if(displayBlog.state.content[data.a-2]==='\\'){
-                const par = displayBlog.state.content.substring(0,data.a-1) + displayBlog.state.content.substring(data.b);
-                displayBlog.setState({content:par});
-              }else{
-                const par = displayBlog.state.content.substring(0,data.a) + displayBlog.state.content.substring(data.b);
-                displayBlog.setState({content:par});
-              }
-            }
-         }
+            displayBlog.setState({content:data.content,cursor:data.cursor+1});
         }
       });
   }
