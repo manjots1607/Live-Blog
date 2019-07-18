@@ -172,7 +172,7 @@ class DisplayBlog extends Component{
     var modifiedContentarr=content.split('\n');
     var modifiedContent2 = modifiedContentarr.map((e,i)=>{
       return(
-        <p className="text-left updateParagraph" style={{fontSize:'1.3em'}}>{e}</p>
+        <p className="text-justify updateParagraph" style={{fontSize:'1.3em'}}>{e}</p>
       )
     });
   const modifiedContent =  modifiedContent2.map(function(p){
@@ -180,7 +180,7 @@ class DisplayBlog extends Component{
       if(list.length == 1){
         return p;
       }else{
-        return <p className="text-left updateParagraph" style={{fontSize:'1.3em'}}><span>{list[0]}</span><span style={liveCursorStyle}>|</span><span style={authorStyle} >Updating</span><span>{list[1]}</span></p>
+        return <p className="text-justify updateParagraph" style={{fontSize:'1.3em'}}><span>{list[0]}</span><span style={liveCursorStyle}>|</span><span style={authorStyle} >Updating</span><span>{list[1]}</span></p>
       }
     });
     return title ===""?<div className="container mt-5"><img src="https://loading.io/spinners/typing/lg.-text-entering-comment-loader.gif" className="img-responsive"/></div>:(
