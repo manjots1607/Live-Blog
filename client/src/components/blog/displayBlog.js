@@ -140,6 +140,10 @@ class DisplayBlog extends Component{
         }
       });
   }
+  componentDidUpdate(prevProps){
+    //log state
+    console.log("Display Blog State, Cursor: ",this.state.cursor," , content: ",this.state.content);
+  }
 
   componentWillUnmount(){
     this.socket.disconnect();
