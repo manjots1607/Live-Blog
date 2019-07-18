@@ -18,7 +18,10 @@ class UpdateBlog extends Component{
     this.handleChange = this.handleChange.bind(this);
     this.handleKeyPress = this.handleKeyPress.bind(this);
     this.handleKeyUp = this.handleKeyUp.bind(this);
-    this.socket= openSocket(window.location.hostname);
+    var socketurlArr=window.location.href.split("/");
+    socketurlArr.splice(3);
+    console.log(socketurlArr.join("/"));
+    this.socket = openSocket(socketurlArr.join("/"));
   }
 
   componentDidMount()
@@ -48,6 +51,7 @@ class UpdateBlog extends Component{
   }
 
   componentWillUnmount(){
+    console.log("Update User unmounting...");
     this.socket.disconnect();
   }
   handleChange(e){

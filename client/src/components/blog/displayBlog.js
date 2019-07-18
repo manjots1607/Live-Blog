@@ -23,8 +23,10 @@ class DisplayBlog extends Component{
       following:false,
       comments:[]
     };
-    
-    this.socket = openSocket(window.location.hostname);
+    var socketurlArr=window.location.href.split("/");
+    socketurlArr.splice(3);
+    console.log(socketurlArr.join("/"));
+    this.socket = openSocket(socketurlArr.join("/"));
     
     
     this.handleEdit = this.handleEdit.bind(this);
