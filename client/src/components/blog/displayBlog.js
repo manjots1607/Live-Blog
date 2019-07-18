@@ -204,7 +204,9 @@ class DisplayBlog extends Component{
         <div className="row mt-5 pt-5">
           <div className="col-md-1 col-sm-0"></div>
           <div className="col-md-10 col-sm-12">
+          <div className="container">
           {modifiedContent}
+          </div>
           </div>
           <div className="col-md-1 col-sm-0"></div>
         </div>
