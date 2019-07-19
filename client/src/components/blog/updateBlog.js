@@ -16,8 +16,8 @@ class UpdateBlog extends Component{
       blogId:''
     };
     this.handleChange = this.handleChange.bind(this);
-    this.handleKeyPress = this.handleKeyPress.bind(this);
-    this.handleKeyUp = this.handleKeyUp.bind(this);
+    // this.handleKeyPress = this.handleKeyPress.bind(this);
+    // this.handleKeyUp = this.handleKeyUp.bind(this);
     var socketurlArr=window.location.href.split("/");
     socketurlArr.splice(3);
     console.log(socketurlArr.join("/"));
