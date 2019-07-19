@@ -122,7 +122,6 @@ class DisplayBlog extends Component{
     const liveCursorStyle={
       color:'green',
       fontSize:'24px',
-      fontWeight:'20px',
       animation:'cursorAnimation 0.5s infinite'
       // position:'relative',
       // left:'3px'
@@ -146,11 +145,11 @@ class DisplayBlog extends Component{
     });
   const modifiedContent =  modifiedContent2.map(function(p){
       const list = p.props.children.split('%$');
-      if(list.length == 1){
+      if(list.length === 1){
         return p;
       }else{
         
-        return <p className="text-justify updateParagraph" style={{fontSize:'1.3em'}}>{list[0]}<span style={liveCursorStyle}>|</span><span style={authorStyle} >Updating</span>{list[1]}</p>
+        return <p className="text-justify updateParagraph" style={{fontSize:'1.3em'}}>{list[0]}<span><span style={liveCursorStyle}>|</span><span style={authorStyle} >Updating</span></span>{list[1]}</p>
       }
     });
     return title ===""?<div className="container mt-5"><img src="https://loading.io/spinners/typing/lg.-text-entering-comment-loader.gif" className="img-responsive"/></div>:(
