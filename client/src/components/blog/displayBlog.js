@@ -122,6 +122,7 @@ class DisplayBlog extends Component{
     const liveCursorStyle={
       color:'green',
       fontSize:'24px',
+      fontWeight:'20px',
       animation:'cursorAnimation 0.5s infinite'
       // position:'relative',
       // left:'3px'
@@ -136,23 +137,9 @@ class DisplayBlog extends Component{
     }
     const {title,imageURL,authorURL,username} = this.state;
     var {content} = this.state;
-    content = this.state.cursor==-1?content:content.substring(0,this.state.cursor)+'%$'+content.substring(this.state.cursor); //%$ is just a symbol
-    var modifiedContentarr=content.split('\n');
-    var modifiedContent2 = modifiedContentarr.map((e,i)=>{
-      return(
-        <p className="text-left updateParagraph" style={{fontSize:'1.3em'}}>{e}</p>
-      )
-    });
-  const modifiedContent =  modifiedContent2.map(function(p){
-      const list = p.props.children.split('%$');
-      if(list.length === 1){
-        return p;
-      }else{
-        
-        return <p className="text-left updateParagraph" style={{fontSize:'1.3em'}}>{list[0]}<span><span style={liveCursorStyle}>|</span><span style={authorStyle} >Updating</span></span>{list[1]}</p>
-      }
-    });
-    return title ===""?<div className="container mt-5"><img src="https://loading.io/spinners/typing/lg.-text-entering-comment-loader.gif" className="img-responsive"/></div>:(
+    var preContent = this.state.cursor==-1?content:content.substring(0,this.state.cursor)
+    var postContent = this.state.cursor==-1?"":content.substring(this.state.cursor); //%$ is just a symbol
+    return title ===""?<img src="https://loading.io/spinners/typing/lg.-text-entering-comment-loader.gif"/>:(
       <div className="container mt-5">
       <p id="updating" style={{position:'fixed',top:'60px',zIndex:'10',fontWeight:'bold',color:'blue',fontSize:'1.2em',width:'80vw'}} className="align-center"></p>
         <div className="row mb-5">
@@ -173,10 +160,14 @@ class DisplayBlog extends Component{
         <div className="row mt-5 pt-5">
           <div className="col-md-1 col-sm-0"></div>
           <div className="col-md-10 col-sm-12">
-          <div className="container">
-          {modifiedContent}
-          <p className="text-justify updateParagraph" style={{fontSize:'1.3em'}}></p>
-          </div>
+              <div>
+              <p className="text-left">
+               <span className="text-left updateParagraph" style={{fontSize:'1.3em',whiteSpace:'pre-wrap'}}> {preContent}</span>
+               {this.state.cursor==-1?null:<span style={liveCursorStyle}>|</span>}
+               {this.state.cursor==-1?null:<span style={authorStyle} >Updating</span>}
+               <span className="text-left updateParagraph" style={{fontSize:'1.3em',whiteSpace:'pre-wrap'}}>{postContent}</span>
+              </p>
+              </div>
           </div>
           <div className="col-md-1 col-sm-0"></div>
         </div>
@@ -184,7 +175,7 @@ class DisplayBlog extends Component{
         <span className="text-primary">{this.state.likesCount} </span>Like{this.state.likesCount>1?"s":null}{this.state.liked?<i className="fa fa-heart text-danger" aria-hidden="true" onClick={this.handleLike}></i>:<i className="fa fa-heart-o text-danger" aria-hidden="true" onClick={this.handleLike}></i>}
         <span className="ml-5 mr-5">{this.state.bookmark?<i class="fa fa-bookmark" aria-hidden="true" onClick={this.handleBookmark}> Bookmarked</i>:<i class="fa fa-bookmark-o" aria-hidden="true" onClick={this.handleBookmark}> Bookmark</i>}</span>
         </div>
-        <Comments curUser={this.props.curUser} comments={this.state.comments}/>
+        <Comments authorURL={authorURL} comments={this.state.comments}/>
       </div>
     );
   }
