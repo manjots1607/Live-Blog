@@ -29,7 +29,7 @@ class UpdateBlog extends Component{
   componentDidUpdate(){
     var cursor = document.querySelector('.updateContent')==null?-1:document.querySelector('.updateContent').selectionStart;
     console.log("socket data",{cursor:cursor,blogId:this.state.blogId,content:this.state.content});
-    socket.emit('update_blog',{
+    this.socket.emit('update_blog',{
       cursor:cursor,
       blogId:this.state.blogId,
       content:this.state.content
