@@ -182,7 +182,8 @@ class DisplayBlog extends Component{
       if(list.length == 1){
         return p;
       }else{
-        return <p className="text-justify updateParagraph" style={{fontSize:'1.3em'}}><span>{list[0]}</span><span style={liveCursorStyle}>|</span><span style={authorStyle} >Updating</span><span>{list[1]}</span></p>
+        
+        return <p className="text-justify updateParagraph" style={{fontSize:'1.3em'}}>{list[0]}<span style={liveCursorStyle}>|</span><span style={authorStyle} >Updating</span>{list[1]}</p>
       }
     });
     return title ===""?<div className="container mt-5"><img src="https://loading.io/spinners/typing/lg.-text-entering-comment-loader.gif" className="img-responsive"/></div>:(
@@ -208,6 +209,7 @@ class DisplayBlog extends Component{
           <div className="col-md-10 col-sm-12">
           <div className="container">
           {modifiedContent}
+          <p className="text-justify updateParagraph" style={{fontSize:'1.3em'}}></p>
           </div>
           </div>
           <div className="col-md-1 col-sm-0"></div>
