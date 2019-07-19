@@ -34,7 +34,7 @@ class UpdateBlog extends Component{
       blogId:this.state.blogId,
       content:this.state.content
     });
-    axios.put(`http://localhost:5000/blog-api/${this.state.blogId}`,{title:this.state.title,content:this.state.content,imageURL:this.state.imageURL})
+    axios.put(`/blog-api/${this.state.blogId}`,{title:this.state.title,content:this.state.content,imageURL:this.state.imageURL})
       .then(res=>{
         const updating = document.getElementById('updating');
         updating.innerText = "Saving...";
