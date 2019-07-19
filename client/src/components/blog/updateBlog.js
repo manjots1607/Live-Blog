@@ -53,16 +53,17 @@ class UpdateBlog extends Component{
     .then(res=>{
       const {title,imageURL,content} = res.data
       const {authorURL,username} = res.data.author;
+      const authorName=res.data.author.name;
       const blogId = res.data._id;
-      this.setState({title,authorURL,imageURL,content,username,blogId});
       if(res.data.curUser){
         if(username!==res.data.curUser.username ){
-
+          
           this.props.history.goBack();
         }
       }else{
         this.props.history.goBack();
       }
+      this.setState({title,authorURL,imageURL,content,username,blogId,authorName});
 
     })
     .catch(err=>{
@@ -148,7 +149,7 @@ class UpdateBlog extends Component{
 
   render(){
 
-    const {title,imageURL,content,authorURL,username} = this.state;
+    const {title,imageURL,content,authorURL,authorName} = this.state;
     const contentStyle = {
       width:'80vw',
       height:'60vh',
@@ -160,11 +161,11 @@ class UpdateBlog extends Component{
       <div className="container mt-5">
         <p id="updating" style={{position:'fixed',top:'60px',zIndex:'10',fontWeight:'bold',color:'while',fontSize:'1.2em',width:'80vw'}} className="align-center"></p>
         <div className="row mb-5">
-          <div className="col-md-6 sm-12">
+          <div className="col-md-6 mb-4 sm-12">
             <h1 className="allign-middle mb-5 text-left">{title}</h1>
             <div>
               <img src={authorURL} style={{borderRadius:'50%',width:'80px'}} className="float-left"/>
-              <span className="float-left text-primary ml-4" style={{fontSize:'1.3em',position:'relative',top:'20px'}}>{username}</span>
+              <span className="float-left text-primary ml-4" style={{fontSize:'1.3em',position:'relative',top:'20px'}}>{authorName}</span>
             </div>
           </div>
           <div className="col-md-6 sm-12">

@@ -143,7 +143,7 @@ class DisplayBlog extends Component{
       <div className="container mt-5">
       <p id="updating" style={{position:'fixed',top:'60px',zIndex:'10',fontWeight:'bold',color:'blue',fontSize:'1.2em',width:'80vw'}} className="align-center"></p>
         <div className="row mb-5">
-          <div className="col-md-6 sm-12">
+          <div className="col-md-6 sm-12 mb-4">
             <h1 className="allign-middle mb-5 text-left">{title}</h1>
             <div>
               <img src={authorURL} style={{borderRadius:'50%',width:'80px'}} className="float-left"/>
