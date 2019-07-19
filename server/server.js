@@ -149,12 +149,12 @@ io.on('connection', (socket) => {
     // Handle chat event
     socket.on('update_blog', function(data){
         console.log('socket data',data);
-        db.Blog.findById(data.blogId)
-          .then(blog=>{
-            blog.content = data.content;
-            blog.save();
+        // db.Blog.findById(data.blogId)
+        //   .then(blog=>{
+        //     blog.content = data.content;
+        //     blog.save();
             socket.broadcast.emit('updateContent', data);
-          })
+          // })
     });
 
     socket.on('disconnect',function(){

@@ -14,8 +14,29 @@ class UpdateBlog extends Component{
       blogId:''
     };
     this.handleChange = this.handleChange.bind(this);
-    this.handleKeyPress = this.handleKeyPress.bind(this);
-    this.handleKeyUp = this.handleKeyUp.bind(this);
+    // this.handleKeyPress = this.handleKeyPress.bind(this);
+    // this.handleKeyUp = this.handleKeyUp.bind(this);
+  }
+
+  componentDidUpdate(){
+    var cursor = document.querySelector('.updateContent')==null?-1:document.querySelector('.updateContent').selectionStart;
+    console.log("socket data",{cursor:cursor,blogId:this.state.blogId,content:this.state.content});
+    socket.emit('update_blog',{
+      cursor:cursor,
+      blogId:this.state.blogId,
+      content:this.state.content
+    });
+    axios.put(`http://localhost:5000/blog-api/${this.state.blogId}`,{title:this.state.title,content:this.state.content,imageURL:this.state.imageURL})
+      .then(res=>{
+        const updating = document.getElementById('updating');
+        updating.innerText = "Saving...";
+        setTimeout(()=>{
+          updating.innerText = "";
+        },1000)
+      })
+      .catch(err=>{
+        alert(err.message);
+      });
   }
 
   componentDidMount()
@@ -40,8 +61,6 @@ class UpdateBlog extends Component{
       console.log(this.props.match.params.blogId);
       console.log(err);
     });
-
-
   }
 
   componentWillUnmount(){
@@ -49,92 +68,74 @@ class UpdateBlog extends Component{
   }
   handleChange(e){
     this.setState({[e.target.name]:e.target.value});
-
   };
 
-  handleKeyPress(e){
-    var startPosition = document.querySelector('.updateContent').selectionStart;
-    var x = e.charCode || e.keyCode || e.which;
-      if(x!=32){
-        // axios.put(`http://localhost:5000/blog-api/${this.state.blogId}`,{title:this.state.title,content:this.state.content,imageURL:this.state.imageURL})
-          // .then(res=>{
-          //   const updating = document.getElementById('updating');
-          //   updating.innerText = "Saving...";
-          //   setTimeout(()=>{
-          //     updating.innerText = "";
-          //   },1000)
-          // })
-          // .catch(err=>{
-          //   alert(err.message);
-          // });
-          if(x===13){
-            x=10;
-          }
-          const par = this.state.content===''?String.fromCharCode(x): this.state.content.substring(0,startPosition)+String.fromCharCode(x) + this.state.content.substring(startPosition);
-          console.log("keypress",par,startPosition);
-          socket.emit('update_blog',{
-            cursor:startPosition,
-            blogId:this.state.blogId,
-            content:par
-          });
-
-      }
-  }
-
-  handleKeyUp(e){
-
-    const updateBlog = this;
-    var startPosition = document.querySelector('.updateContent').selectionStart;
-    var endPosition = document.querySelector('.updateContent').selectionEnd;
-    console.log('positions are',startPosition,endPosition);
-    var x = e.charCode || e.keyCode || e.which;  // Get the Unicode value
-    // Check if you've selected text
-      if((x==8) && startPosition==0&&endPosition!=0){
-      }
-      else if(x==8){  //backspace
-        // axios.put(`http://localhost:5000/blog-api/${this.state.blogId}`,{title:this.state.title,content:this.state.content,imageURL:this.state.imageURL})
-        //   .then(res=>{
-        //
-        //     const updating = document.getElementById('updating');
-        //     updating.innerText = "Saving...";
-        //     setTimeout(()=>{
-        //       updating.innerText = "";
-        //     },1000)
-        //   })
-        //   .catch(err=>{
-        //     alert(err.message);
-        //   });
-        const par = this.state.content.substring(0,startPosition) + this.state.content.substring(endPosition);
-        console.log("data",par,startPosition-1);
-            socket.emit('update_blog',{
-              cursor:startPosition-1,
-              blogId:updateBlog.state.blogId,
-              content:par
-            });
-
-      }else if(x==32){  //space
-        console.log("keyup");
-
-        // axios.put(`http://localhost:5000/blog-api/${this.state.blogId}`,{title:this.state.title,content:this.state.content,imageURL:this.state.imageURL})
-        //   .then(res=>{
-        //     const updating = document.getElementById('updating');
-        //     updating.innerText = "Saving...";
-        //     setTimeout(()=>{
-        //       updating.innerText = "";
-        //     },1000)
-        //   })
-        //   .catch(err=>{
-        //     alert(err.message);
-        //   });
-        const par = this.state.content.substring(0,startPosition-1) +" " + this.state.content.substring(startPosition-1);
-        console.log("data is",par,startPosition-1);
-            socket.emit('update_blog',{
-              cursor:startPosition-1,
-              blogId:updateBlog.state.blogId,
-              content:par
-            });
-      }
-}
+//   handleKeyPress(e){
+//     var x = e.charCode || e.keyCode || e.which;
+//       if(x!=32){
+//           if(x===13){
+//             x=10;
+//           }
+//           const par = this.state.content===''?String.fromCharCode(x): this.state.content.substring(0,startPosition)+String.fromCharCode(x) + this.state.content.substring(startPosition);
+//           console.log("keypress",par,startPosition);
+//
+//       }
+//   }
+//
+//   handleKeyUp(e){
+//
+//     const updateBlog = this;
+//     var startPosition = document.querySelector('.updateContent').selectionStart;
+//     var endPosition = document.querySelector('.updateContent').selectionEnd;
+//     console.log('positions are',startPosition,endPosition);
+//     var x = e.charCode || e.keyCode || e.which;  // Get the Unicode value
+//     // Check if you've selected text
+//       if((x==8) && startPosition==0&&endPosition!=0){
+//       }
+//       else if(x==8){  //backspace
+//         // axios.put(`http://localhost:5000/blog-api/${this.state.blogId}`,{title:this.state.title,content:this.state.content,imageURL:this.state.imageURL})
+//         //   .then(res=>{
+//         //
+//         //     const updating = document.getElementById('updating');
+//         //     updating.innerText = "Saving...";
+//         //     setTimeout(()=>{
+//         //       updating.innerText = "";
+//         //     },1000)
+//         //   })
+//         //   .catch(err=>{
+//         //     alert(err.message);
+//         //   });
+//         const par = this.state.content.substring(0,startPosition) + this.state.content.substring(endPosition);
+//         console.log("data",par,startPosition-1);
+//             socket.emit('update_blog',{
+//               cursor:startPosition-1,
+//               blogId:updateBlog.state.blogId,
+//               content:par
+//             });
+//
+//       }else if(x==32){  //space
+//         console.log("keyup");
+//
+//         // axios.put(`http://localhost:5000/blog-api/${this.state.blogId}`,{title:this.state.title,content:this.state.content,imageURL:this.state.imageURL})
+//         //   .then(res=>{
+//         //     const updating = document.getElementById('updating');
+//         //     updating.innerText = "Saving...";
+//         //     setTimeout(()=>{
+//         //       updating.innerText = "";
+//         //     },1000)
+//         //   })
+//         //   .catch(err=>{
+//         //     alert(err.message);
+//         //   });
+//         const par = this.state.content.substring(0,startPosition-1) +" " + this.state.content.substring(startPosition-1);
+//         console.log("data is",par,startPosition-1);
+//             socket.emit('update_blog',{
+//               cursor:startPosition-1,
+//               blogId:updateBlog.state.blogId,
+//               content:par
+//             });
+//       }
+// }
 
   render(){
 

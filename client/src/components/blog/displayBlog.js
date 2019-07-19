@@ -100,7 +100,7 @@ class DisplayBlog extends Component{
           updating.innerText = "";
         },1000)
         if(data.blogId ===displayBlog.state.blogId){
-            displayBlog.setState({content:data.content,cursor:data.cursor+1});
+            displayBlog.setState({content:data.content,cursor:data.cursor});
         }
       });
   }
