@@ -165,7 +165,11 @@ app.post('/api/forget', function(req, res, next) {
                 If you did not request this, please ignore this email and your password will remain unchanged.\n`     
       };
       
-      mailFunction(msg);}
+      mailFunction(msg,(err,info)=>{
+        done(err,'done');
+      });
+      
+    }
   ], function(err) {
     if (err)     res.json({msg:err.message});
     res.json({msg:""});
@@ -177,7 +181,7 @@ app.post('/api/reset/:token', function(req, res) {
     function(done) {
       db.User.findOne({ resetPasswordToken: req.params.token, resetPasswordExpires: { $gt: Date.now() } }, function(err, user) {
         if (!user) {
-          res.json({msg:'Password reset token is invalid or has expired.'});
+          return res.json({msg:'Password reset token is invalid or has expired.'});
         }
           user.setPassword(req.body.password, function(err) {
             user.resetPasswordToken = undefined;
@@ -198,11 +202,14 @@ app.post('/api/reset/:token', function(req, res) {
         subject: 'Your password has been changed', // Subject line
         text: `This is a confirmation that the password for your account ${user.username} has just been changed. `     
       };
-      mailFunction(msg);
+      mailFunction(msg,(err,info)=>{
+        done(err,'done');
+      });
       
     }
   ], function(err) {
-    res.json({msg:"Success! Your password has been changed."});
+    if(err){return res.json({msg:err});}
+    res.json({msg:`Success! Your password for username has been changed.`});
   });
 });
 
